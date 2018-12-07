@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+
+from toastedmarshmallow import Jit
+from marshmallow import Schema, fields
+
+
+class Settings(Schema):
+    class Meta:
+        jit = Jit
+
+
+class CoreSettings(Settings):
+    host = fields.String(missing='127.0.0.1')
+    port = fields.Integer(missing=5000)
+    debug = fields.Bool(missing=False)
+    workers = fields.Integer(missing=0)
+    access_log = fields.Bool(missing=False)
+
+
+class RPCSettings(Settings):
+    enabled = fields.Bool(missing=False)
+    nodes = fields.List(fields.String(), missing=[])
+    proxy_path = fields.String(missing='/')
+    actions_public = fields.List(fields.String(), missing=[])
+    actions_protected = fields.List(fields.String(), missing=[])
+
