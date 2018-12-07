@@ -108,6 +108,3 @@ class NodeRPCProxyView(views.HTTPMethodView):
             raise NanioException(err.message, err.code)
 
         return response.json(result, status)
-
-    async def get(self, request):
-        return response.json([], 200)

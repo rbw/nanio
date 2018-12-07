@@ -88,7 +88,7 @@ def create_app():
 
     # Register routes
     app.add_route(NodeRPCProxyView.as_view(app.cfg), '/node-rpc')
-    app.add_route(UIView.as_view(app.cfg), '/api/ui')
+    app.add_route(UIView.as_view(), '/api/ui')
 
     register_error_handlers(app)
 
