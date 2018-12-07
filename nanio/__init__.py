@@ -90,9 +90,6 @@ def create_app():
     app.add_route(NodeRPCProxyView.as_view(app.cfg), '/node-rpc')
     app.add_route(UIView.as_view(app.cfg), '/api/ui')
 
-    app.static('/static/', './static')
-    app.static('/static', './static/index.html')
-
     register_error_handlers(app)
 
     return app
