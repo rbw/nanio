@@ -32,9 +32,8 @@ class NodeRPCProxyView(views.HTTPMethodView):
         self._action = None
         self._cfg = cfg
         self._debug = cfg.core['debug']
-        self.node_url = environ.get('NODE_ADDRESS', cfg.rpc['nodes'][0])
 
-    async def _rpc_request(self, payload):
+    async def _rpc_request(self, address, payload):
         """Performs an RPC request
 
         :param payload: payload to pass along to the Node RPC server
@@ -47,7 +46,7 @@ class NodeRPCProxyView(views.HTTPMethodView):
             self.log.info('Send [{0}]'.format(self._action))
 
         async with aiohttp.ClientSession() as client:
-            return await http_post(client, self.node_url, payload)
+            return await http_post(client, address, payload)
 
     async def _get_validated_payload(self, request):
         """Deserialize and validate JSON payload
@@ -93,7 +92,7 @@ class NodeRPCProxyView(views.HTTPMethodView):
         payload = await self._get_validated_payload(request)
 
         try:
-            status, result = await self._rpc_request(payload)
+            status, result = await self._rpc_request(request.app.node_url, payload)
             if self._debug:
                 self.log.debug('Receive [{0}]:\n{1}'.format(self._action, ujson.dumps(result)))
 

@@ -57,6 +57,7 @@ class Nanio(Sanic):
         self.cfg = NanioSettings(dict(settings))
         self.log_config = LOGGING_CONFIG_DEFAULTS
         self.log_config['level'] = 'INFO'
+        self.rpc_nodes = [env.get('NODE_ADDRESS', self.cfg.rpc['nodes'][0])]
 
         self.rpc_defs = rpc_schemas({
             'public': self.cfg.rpc['actions_public'],
@@ -82,7 +83,7 @@ def create_app():
     Log.root.info('Nanio starting...')
 
     if app.cfg.rpc['enabled']:
-        Log.root.info('RPC backends: {0}'.format(', '.join(app.cfg.rpc['nodes']) or 'None configured'))
+        Log.root.info('RPC backends: {0}'.format(','.join(app.rpc_nodes) or 'None configured'))
     else:
         Log.root.info('RPC proxy disabled')
 
