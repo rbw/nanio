@@ -1,7 +1,7 @@
 # Nano RPC node_proxy configuration
 enabled: true
 nodes:
-  - http://127.0.0.1:7076
+  - 127.0.0.1:7076
 proxy_path: /node-rpc
 actions_public:
     - validate_account_number
