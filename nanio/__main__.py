@@ -14,8 +14,8 @@ def main():
 
     app.run(
         host=environ.get('NANIO_HOST', config['host']),
-        port=environ.get('NANIO_PORT', config['port']),
-        workers=environ.get('NANIO_WORKERS', config['workers']),
+        port=int(environ.get('NANIO_PORT', config['port'])),
+        workers=int(environ.get('NANIO_WORKERS', config['workers'])),
         debug=debug,
         access_log=environ.get('NANIO_ACCESS_LOG', config['access_log'])
     )
