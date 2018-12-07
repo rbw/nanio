@@ -92,7 +92,7 @@ class NodeRPCProxyView(views.HTTPMethodView):
         payload = await self._get_validated_payload(request)
 
         try:
-            status, result = await self._rpc_request(request.app.node_url, payload)
+            status, result = await self._rpc_request(request.app.rpc_nodes[0], payload)
             if self._debug:
                 self.log.debug('Receive [{0}]:\n{1}'.format(self._action, ujson.dumps(result)))
 
