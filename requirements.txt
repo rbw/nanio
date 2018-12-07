@@ -3,5 +3,6 @@ libn>=0.1.8
 aiohttp>=2.3.9
 ujson>=1.35
 marshmallow>=2.16.3
+six>=1.11.0
 toastedmarshmallow==0.2.5
 PyYAML==3.11
