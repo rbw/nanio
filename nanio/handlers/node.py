@@ -4,6 +4,7 @@ import aiohttp
 import functools
 import ujson
 
+from os import environ
 from logging import LoggerAdapter
 from aiohttp.client_exceptions import ClientConnectionError
 from aiohttp.http_exceptions import HttpProcessingError
@@ -31,7 +32,7 @@ class NodeRPCProxyView(views.HTTPMethodView):
         self._action = None
         self._cfg = cfg
         self._debug = cfg.core['debug']
-        self.node_url = cfg.rpc['nodes'][0]
+        self.node_url = environ.get('NODE_ADDRESS', cfg.rpc['nodes'][0])
 
     async def _rpc_request(self, payload):
         """Performs an RPC request

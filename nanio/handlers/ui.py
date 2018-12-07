@@ -16,12 +16,6 @@ def inject_log_meta(func):
 class UIView(views.HTTPMethodView):
     log = Log.node_rpc
 
-    def __init__(self, cfg):
-        self._action = None
-        self._cfg = cfg
-        self._debug = cfg.core['debug']
-        self.node_url = cfg.rpc['nodes'][0]
-
     @inject_log_meta
     async def get(self, request):
         self.log.info('Sending frontend config')
