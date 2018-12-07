@@ -46,7 +46,7 @@ class NodeRPCProxyView(views.HTTPMethodView):
             self.log.info('Send [{0}]'.format(self._action))
 
         async with aiohttp.ClientSession() as client:
-            return await http_post(client, address, payload)
+            return await http_post(client, 'http://{0}'.format(address), payload)
 
     async def _get_validated_payload(self, request):
         """Deserialize and validate JSON payload
