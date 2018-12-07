@@ -1,0 +1,9 @@
+version: '2'
+services:
+  core:
+    image: rbw0/nanio:core
+    ports:
+      - '8080:8080'
+    environment:
+      - NODE_ADDRESS=127.0.0.1:7076
+      - NANIO_WORKERS=2

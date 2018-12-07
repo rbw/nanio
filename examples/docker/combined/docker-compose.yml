@@ -1,0 +1,18 @@
+version: '2'
+services:
+  core:
+    image: rbw0/nanio:core
+    ports:
+      - '8080:8080'
+    environment:
+      - NODE_ADDRESS=127.0.0.1:7076
+      - NANIO_WORKERS=2
+  nginx:
+    image: rbw0/nanio:nginx
+    network_mode: host
+    ports:
+      - '80:80'
+    environment:
+      - NANIO_ADDRESS=127.0.0.1:8080
+      - NGINX_RPS=2
+      - NGINX_WORKERS=2
