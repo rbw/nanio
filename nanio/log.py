@@ -9,7 +9,7 @@ LOGGING_CONFIG_DEFAULTS = dict(
     disable_existing_loggers=False,
     loggers={
         "root": {
-            "level": "INFO",
+            "level": "DEBUG",
             "handlers": ["console"]
         },
         "nanio.node_rpc": {
@@ -18,7 +18,7 @@ LOGGING_CONFIG_DEFAULTS = dict(
             "qualname": "nanio.node_rpc"
         },
         "sanic.error": {
-            "level": "INFO",
+            "level": "DEBUG",
             "handlers": ["error_console"],
             "qualname": "sanic.error"
         },
@@ -53,6 +53,8 @@ LOGGING_CONFIG_DEFAULTS = dict(
         },
     }
 )
+
+for name, logger in LOGGING_CONFIG_DEFAULTS['loggers'].items():
 
 
 class Log:
