@@ -56,7 +56,6 @@ class Nanio(Sanic):
     def __init__(self, settings, **kwargs):
         self.cfg = NanioSettings(dict(settings))
         self.log_config = LOGGING_CONFIG_DEFAULTS
-        self.log_config['level'] = 'INFO'
         self.rpc_nodes = [env.get('NODE_ADDRESS', self.cfg.rpc['nodes'][0])]
 
         self.rpc_defs = rpc_schemas({
@@ -78,6 +77,10 @@ def create_app():
 
     # Set up logging
     logging.config.dictConfig(app.log_config)
+    loglevel = 'DEBUG' if app.cfg.core['debug'] else 'INFO'
+
+    for name in LOGGING_CONFIG_DEFAULTS['loggers'].keys():
+        logging.getLogger(name).setLevel(loglevel)
 
     # Show some useful details
     Log.root.info('Nanio starting...')

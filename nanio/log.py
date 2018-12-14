@@ -54,8 +54,6 @@ LOGGING_CONFIG_DEFAULTS = dict(
     }
 )
 
-for name, logger in LOGGING_CONFIG_DEFAULTS['loggers'].items():
-
 
 class Log:
     root = logging.getLogger('root')
