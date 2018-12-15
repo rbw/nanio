@@ -3,6 +3,7 @@
 import logging
 import logging.config
 import ujson
+import shelve
 
 from os import environ as env
 from yaml import load as yaml_parse
@@ -55,6 +56,11 @@ class NanioSettings(object):
 class Nanio(Sanic):
     def __init__(self, settings, **kwargs):
         self.cfg = NanioSettings(dict(settings))
+
+        # Set up file synced in-memory shelve
+        store_file = self.cfg.core.get('store', env.get('NANIO_STORE_PATH', './.store'))
+        self.store = shelve.open(store_file, flag='c')
+
         self.log_config = LOGGING_CONFIG_DEFAULTS
         self.rpc_nodes = [env.get('NODE_ADDRESS', self.cfg.rpc['nodes'][0])]
 

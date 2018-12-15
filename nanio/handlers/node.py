@@ -4,7 +4,6 @@ import aiohttp
 import functools
 import ujson
 
-from os import environ
 from logging import LoggerAdapter
 from aiohttp.client_exceptions import ClientConnectionError
 from aiohttp.http_exceptions import HttpProcessingError
@@ -58,6 +57,9 @@ class NodeRPCProxyView(views.HTTPMethodView):
 
         if not payload or 'action' not in payload:
             raise NanioException('Missing action in payload', 400)
+        elif 'action' in self._cfg.rpc['actions_protected']:
+            store = request.app.store
+            print(store)
 
         self._action = payload['action']
         schema = ACTIONS_SCHEMAS.get(self._action, None)
