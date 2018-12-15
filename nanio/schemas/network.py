@@ -27,7 +27,7 @@ class AvailableSupply(Action):
 
 class Representatives(Action):
     class Meta(NetworkMeta):
-        name = 'Representatives [top 50]'
+        name = 'Representatives'
         action = 'representatives'
         description = 'Returns a list of pairs of representative and its voting weight'
         examples = {
@@ -38,7 +38,7 @@ class Representatives(Action):
             },
         }
 
-    count = fields.Integer(required=False, max=50, missing=50, default=50)
+    count = fields.Integer(required=False, missing=20, default=50)
     sorting = fields.Boolean(required=False, default=True)
 
 
