@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import asyncio
+
 from logging import LoggerAdapter
 from sanic import response, views
 from nanio.log import Log
@@ -19,6 +21,8 @@ class UIView(views.HTTPMethodView):
     @inject_log_meta
     async def get(self, request):
         self.log.info('Sending frontend config')
+
+        await asyncio.sleep(1)
 
         return response.json({
             'rpc': request.app.rpc_defs
