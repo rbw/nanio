@@ -173,7 +173,10 @@ class Blocks(HashesBlock):
         examples = {
             'request': {
               "action": "blocks",
-              "hashes": ["87434F8041869A01C8F6F263B87972D7BA443A72E0A97D7A3FD0CCC2358FD6F9"]
+              "hashes": [
+                  "87434F8041869A01C8F6F263B87972D7BA443A72E0A97D7A3FD0CCC2358FD6F9",
+                  "B292BFFAAE9013BE630B31144EF15205E986940080687C0441CCFE6EAB67FE53"
+              ]
             },
         }
 
