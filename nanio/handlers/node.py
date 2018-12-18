@@ -16,13 +16,8 @@ from nanio.log import Log
 from nanio.utils import inject_log_meta
 
 
-class NodeRPCProxyAPI(views.HTTPMethodView):
+class NodeGateway(views.HTTPMethodView):
     log = Log.node_rpc
-
-    def __init__(self, cfg):
-        self._action = None
-        self._cfg = cfg
-        self._debug = cfg.core['debug']
 
     async def _rpc_request(self, address, payload):
         """Performs an RPC request
@@ -59,7 +54,7 @@ class NodeRPCProxyAPI(views.HTTPMethodView):
         if not schema:
             raise NanioException('Unknown action', 422)
         elif self._action not in self._cfg.rpc['actions_public']:
-            raise NanioException('Disallowed action', 422)
+            raise NanioException('Disabled action', 422)
         elif self._action in self._cfg.rpc['actions_protected']:
             pass
 

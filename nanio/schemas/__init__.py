@@ -39,7 +39,7 @@ SCHEMAS = [
 ACTIONS_SCHEMAS = {s.Meta.action: s for s in SCHEMAS}
 
 
-def get_rpc_schema(actions_enabled):
+def get_rpc_schemas(public, protected):
     groups = {}
 
     for _, schema in sorted(ACTIONS_SCHEMAS.items()):
@@ -50,8 +50,8 @@ def get_rpc_schema(actions_enabled):
             'name': schema.Meta.name,
             'action': action,
             'description': schema.Meta.description,
-            'enabled': action in actions_enabled['public'] + actions_enabled['protected'],
-            'protected': action in actions_enabled['protected'],
+            'enabled': action in public + protected,
+            'protected': action in protected,
             'examples': schema.Meta.examples,
             'fields': []
         }

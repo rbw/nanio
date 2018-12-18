@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 
-from .node import NodeRPCProxyAPI
-from .schema import SchemaAPI
+from .node import NodeGateway
+from .schemas import SchemasAPI
