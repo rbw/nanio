@@ -39,7 +39,7 @@ SCHEMAS = [
 ACTIONS_SCHEMAS = {s.Meta.action: s for s in SCHEMAS}
 
 
-def rpc_schemas(actions_enabled):
+def get_rpc_schema(actions_enabled):
     groups = {}
 
     for _, schema in sorted(ACTIONS_SCHEMAS.items()):

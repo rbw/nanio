@@ -4,6 +4,7 @@ import logging
 import logging.config
 import ujson
 import shelve
+import asyncio_redis
 
 from os import environ as env
 from yaml import load as yaml_parse
@@ -11,12 +12,25 @@ from yaml.parser import ParserError as YAMLParseError
 
 from pathlib import Path
 from sanic import Sanic, response
+
 from sanic.exceptions import SanicException
 from nanio.exceptions import NanioException
 
-from .handlers import NodeRPCProxyView, UIView
-from .schemas import CoreSettings, RPCSettings, rpc_schemas
+from .handlers import NodeRPCProxyAPI, SchemaAPI
+from .schemas import CoreSettings, RPCSettings, get_rpc_schema
 from .log import LOGGING_CONFIG_DEFAULTS, Log
+
+
+class Redis:
+    _pool = None
+
+    async def get_redis_pool(self):
+        if not self._pool:
+            self._pool = await asyncio_redis.Pool.create(
+                host='localhost', port=6379, poolsize=10
+            )
+
+        return self._pool
 
 
 def register_error_handlers(app):
@@ -64,10 +78,10 @@ class Nanio(Sanic):
         self.log_config = LOGGING_CONFIG_DEFAULTS
         self.rpc_nodes = [env.get('NODE_ADDRESS', self.cfg.rpc['nodes'][0])]
 
-        self.rpc_defs = rpc_schemas({
-            'public': self.cfg.rpc['actions_public'],
-            'protected': self.cfg.rpc['actions_protected'],
-        })
+        self.rpc_schema = get_rpc_schema(actions_enabled=dict(
+            public=self.cfg.rpc['actions_public'],
+            protected=self.cfg.rpc['actions_protected']
+        ))
 
         super(Nanio, self).__init__('nanio', **kwargs)
 
@@ -97,8 +111,8 @@ def create_app():
         Log.root.info('RPC proxy disabled')
 
     # Register routes
-    app.add_route(NodeRPCProxyView.as_view(app.cfg), '/node-rpc')
-    app.add_route(UIView.as_view(), '/api/ui')
+    app.add_route(NodeRPCProxyAPI.as_view(app.cfg), '/node-rpc')
+    app.add_route(SchemaAPI.as_view(), '/api/schema')
 
     register_error_handlers(app)
 

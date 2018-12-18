@@ -4,7 +4,6 @@ import aiohttp
 import functools
 import ujson
 
-from logging import LoggerAdapter
 from aiohttp.client_exceptions import ClientConnectionError
 from aiohttp.http_exceptions import HttpProcessingError
 from marshmallow import ValidationError
@@ -14,17 +13,10 @@ from nanio.exceptions import NanioException
 from nanio.handlers._common import http_post
 from nanio.schemas import ACTIONS_SCHEMAS
 from nanio.log import Log
+from nanio.utils import inject_log_meta
 
 
-def inject_log_meta(func):
-    def inner(self, request, *args, **kwargs):
-        self.log = LoggerAdapter(self.log, {'host': request.ip})
-        return func(self, request, *args, **kwargs)
-
-    return inner
-
-
-class NodeRPCProxyView(views.HTTPMethodView):
+class NodeRPCProxyAPI(views.HTTPMethodView):
     log = Log.node_rpc
 
     def __init__(self, cfg):
