@@ -50,8 +50,8 @@ LOGGING_CONFIG_DEFAULTS = dict(
             'class': 'logging.Formatter'
         },
         'generic': {
-            'format': '%(asctime)s [%(process)d] [%(levelname)s] %(message)s',
-            'datefmt': '[%Y-%m-%d %H:%M:%S %z]',
+            'format': '[%(levelname)1.1s %(asctime)s.%(msecs)03d %(process)d] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
             'class': 'logging.Formatter'
         },
     }

@@ -11,8 +11,7 @@ from nanio.exceptions import NanioException
 
 import nanio.config
 from nanio.log import LOGGING_CONFIG_DEFAULTS, log_root, log_api
-from nanio.api import base, gateway
-from nanio.services.base import NanioService
+from nanio.ext import registry, NanioService
 
 
 def register_error_handlers(app):
@@ -60,11 +59,11 @@ def create_app():
     app.register_listener(client_create, 'before_server_start')
     app.register_listener(client_destroy, 'after_server_stop')
 
-    # Register base /api
-    app.blueprint(base)
+    # Add extension registry to app
+    app.ext = registry
 
-    # Register Node RPC API gateway
-    app.blueprint(gateway)
+    # Register blueprints from AppRegistry
+    app.blueprint(registry.blueprints)
 
     log_root.info('Nanio starting...')
 

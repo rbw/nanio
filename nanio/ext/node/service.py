@@ -8,13 +8,10 @@ from aiohttp.http_exceptions import HttpProcessingError
 from marshmallow import ValidationError
 
 from nanio.exceptions import NanioException
-from nanio.schemas import RPC_SCHEMAS
-from nanio.config import (
-    RPC_NODES, RPC_ENABLED,
-    RPC_ACTIONS_PUBLIC, RPC_ACTIONS_PROTECTED,
-)
+from nanio.config import RPC_NODES, RPC_ACTIONS_PUBLIC, RPC_ACTIONS_PROTECTED
+from nanio.ext.common import NanioService
 
-from .base import NanioService
+from .schemas import RPC_SCHEMAS
 
 
 class Schemas:
@@ -55,7 +52,7 @@ class Schemas:
         return groups
 
 
-class NanoService(NanioService):
+class NodeService(NanioService):
     def __init__(self):
         self.node_url = 'http://' + RPC_NODES[0]
         self.schemas = Schemas()
@@ -92,9 +89,6 @@ class NanoService(NanioService):
         return schema.dumps(validated).data
 
     async def send(self, body):
-        if not RPC_ENABLED:
-            return {'result': 'RPC proxy disabled'}, 200
-
         payload = await self.validate_body(body)
 
         if self.debug:

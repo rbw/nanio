@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import re
+import yaml
+
 from os import environ as env
 from nanio.schemas import CoreSettings, RPCSettings
-from nanio.utils import yaml_parse
+
+
+def yaml_parse(_dir, file):
+    path = '{0}/{1}'.format(_dir, file)
+    with open(path, 'r') as stream:
+        return yaml.load(stream)
 
 
 def settings_from_yaml(*args):
