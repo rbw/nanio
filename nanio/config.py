@@ -2,7 +2,7 @@
 
 import re
 from os import environ as env
-from nanio.schemas import CoreSettings, RPCSettings, get_rpc_schemas
+from nanio.schemas import CoreSettings, RPCSettings
 from nanio.utils import yaml_parse
 
 
@@ -42,13 +42,11 @@ APP_WORKERS = to_int(env.get('APP_WORKERS')) or yml_core['workers']
 
 # Set up RPC
 RPC_ENABLED = to_bool(env.get('RPC_ENABLED')) or yml_rpc['enabled']
-RPC_ADDRESSES = to_list(env.get('RPC_NODES')) or yml_rpc['nodes']
+RPC_NODES = to_list(env.get('RPC_NODES')) or yml_rpc['nodes']
 RPC_PATH = env.get('RPC_PATH') or yml_rpc['path']
 
-actions_public = to_list(env.get('RPC_ACTIONS_PUBLIC')) or yml_rpc['actions_public']
-actions_protected = to_list(env.get('RPC_ACTIONS_PROTECTED')) or yml_rpc['actions_protected']
-
-RPC_SCHEMAS = get_rpc_schemas(actions_public, actions_protected)
+RPC_ACTIONS_PUBLIC = to_list(env.get('RPC_ACTIONS_PUBLIC')) or yml_rpc['actions_public']
+RPC_ACTIONS_PROTECTED = to_list(env.get('RPC_ACTIONS_PROTECTED')) or yml_rpc['actions_protected']
 
 # Override Sanic defaults
 LOGO = False

@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import logging
-import logging.config
 import ujson
 
+from logging import LoggerAdapter
 from sanic import Sanic, response
 
 from sanic.exceptions import SanicException
 from nanio.exceptions import NanioException
 
 import nanio.config
-from nanio.handlers import NodeGateway, SchemasAPI
-from nanio.schemas import RPCSettings, get_rpc_schemas
 from nanio.log import LOGGING_CONFIG_DEFAULTS, Log
+from nanio.api import base, gateway
+
+log = Log.root
 
 
 def register_error_handlers(app):
@@ -22,7 +22,7 @@ def register_error_handlers(app):
 
         if isinstance(exception, NanioException):
             if exception.log_message:
-                Log.error.info(msg)
+                log.error(msg)
 
         try:
             error = ujson.loads(msg)
@@ -32,30 +32,27 @@ def register_error_handlers(app):
         return response.json(body={'error': error}, status=exception.status_code)
 
 
+async def contextual_logging(request):
+    Log.api = LoggerAdapter(Log.api, {'remote_addr': request.remote_addr or request.ip})
+
+
 def create_app():
-    # Create app
     app = Sanic('nanio', log_config=LOGGING_CONFIG_DEFAULTS)
     app.config.from_object(nanio.config)
-
-    # Set up logging
-    """logging.config.dictConfig(app.log_config)
-    loglevel = 'DEBUG' if app.cfg.core['debug'] else 'INFO'
-
-    for name in LOGGING_CONFIG_DEFAULTS['loggers'].keys():
-        logging.getLogger(name).setLevel(loglevel)"""
-
-    # Show some useful details
-    Log.root.info('Nanio starting...')
-
-    """if app.cfg.rpc['enabled']:
-        Log.root.info('RPC backends: {0}'.format(','.join(app.rpc_nodes) or 'None configured'))
-    else:
-        Log.root.info('RPC proxy disabled')"""
-
-    # Register routes
-    app.add_route(NodeGateway.as_view(app.config), '/node-rpc')
-    app.add_route(SchemasAPI.as_view(), '/api/schemas')
-
     register_error_handlers(app)
+    app.register_middleware(contextual_logging, 'request')
+
+    # Register base /api
+    app.blueprint(base)
+
+    # Register Node RPC API gateway
+    app.blueprint(gateway)
+
+    log.info('Nanio starting...')
+
+    if app.config['RPC_ENABLED']:
+        log.info('RPC backends: {0}'.format(','.join(app.config['RPC_NODES']) or 'None configured'))
+    else:
+        log.info('RPC proxy disabled')
 
     return app

@@ -7,49 +7,52 @@ import sys
 LOGGING_CONFIG_DEFAULTS = dict(
     version=1,
     disable_existing_loggers=False,
+
     loggers={
-        "root": {
-            "level": "DEBUG",
-            "handlers": ["console"]
+        'root': {
+            'level': 'DEBUG',
+            'handlers': ['console']
         },
-        "nanio.node_rpc": {
-            "level": "DEBUG",
-            "handlers": ["access_console"],
-            "qualname": "nanio.node_rpc"
+        'nanio.api': {
+            'level': 'DEBUG',
+            'handlers': ['api_console'],
+            'propagate': True,
+            'qualname': 'nanio.api'
         },
-        "sanic.error": {
-            "level": "DEBUG",
-            "handlers": ["error_console"],
-            "qualname": "sanic.error"
+        'sanic.error': {
+            'level': 'INFO',
+            'handlers': ['error_console'],
+            'propagate': True,
+            'qualname': 'sanic.error'
         },
     },
     handlers={
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "generic",
-            "stream": sys.stdout
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'generic',
+            'stream': sys.stdout
         },
-        "error_console": {
-            "class": "logging.StreamHandler",
-            "formatter": "generic",
-            "stream": sys.stderr
+        'error_console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'generic',
+            'stream': sys.stderr
         },
-        "access_console": {
-            "class": "logging.StreamHandler",
-            "formatter": "access",
-            "stream": sys.stdout
+        'api_console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'api_access',
+            'stream': sys.stdout
         },
     },
     formatters={
-        "generic": {
-            "format": '[%(levelname)1.1s %(asctime)s] %(message)s',
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-            "class": "logging.Formatter"
+        'api_access': {
+            'format': '[%(levelname)1.1s %(asctime)s.%(msecs)03d %(remote_addr)s] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'class': 'logging.Formatter'
         },
-        "access": {
-            'format': '[%(levelname)1.1s %(asctime)s.%(msecs)03d %(host)s] %(message)s',
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-            "class": "logging.Formatter"
+        'generic': {
+            'format': '%(asctime)s [%(process)d] [%(levelname)s] %(message)s',
+            'datefmt': '[%Y-%m-%d %H:%M:%S %z]',
+            'class': 'logging.Formatter'
         },
     }
 )
@@ -57,5 +60,4 @@ LOGGING_CONFIG_DEFAULTS = dict(
 
 class Log:
     root = logging.getLogger('root')
-    node_rpc = logging.getLogger('nanio.node_rpc')
-    error = logging.getLogger('sanic.error')
+    api = logging.getLogger('nanio.api')

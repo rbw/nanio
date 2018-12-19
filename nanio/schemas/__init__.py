@@ -38,35 +38,3 @@ SCHEMAS = [
 
 ACTIONS_SCHEMAS = {s.Meta.action: s for s in SCHEMAS}
 
-
-def get_rpc_schemas(public, protected):
-    groups = {}
-
-    for _, schema in sorted(ACTIONS_SCHEMAS.items()):
-        group = schema.Meta.group
-        action = schema.Meta.action
-
-        action = {
-            'name': schema.Meta.name,
-            'action': action,
-            'description': schema.Meta.description,
-            'enabled': action in public + protected,
-            'protected': action in protected,
-            'examples': schema.Meta.examples,
-            'fields': []
-        }
-
-        for name, field in schema._declared_fields.items():
-            action['fields'].append({
-                'name': name,
-                'required': field.required,
-                'type': field.__class__.__name__,
-                'description': field.metadata.get('description', None)
-            })
-
-        if group not in groups:
-            groups[group] = []
-
-        groups[group].append(action)
-
-    return groups
