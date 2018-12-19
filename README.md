@@ -1,15 +1,14 @@
 # nanio
 
-Nanio provides a modular backend platform on top of Nano, at its core you'll find a Nano RPC gateway and API browser - with OAuth, a Monitoring component and WebSocket support soon to be added.
-
+Nanio provides a modular backend platform on top of Nano, its core is currently comprised of the Nanio RPC gateway and API browser. 
 
 Why use it?
 ---
-Depends. If you're just after an internet connected Nano network RPC relay, or the API browser provided by Nanio--but don't want to set up your own server--then my [publicly available Nanio server](https://nanio.vault13.org), connected to the Nano Live network, might suit your needs.
+Depends. If you're just after an internet connected Nano network RPC relay, or the API browser--but don't want to set up your own server--then my [publicly available Nanio server](https://nanio.vault13.org), connected to the Nano Live network might suit your needs.
 
 If you want to build a Nano application--be it a light wallet or something else, and you're familiar with Python and async programming--then Nanio might speed up the process of doing so by providing a lightweight, high-performance and scalable backend platform that comes with an easy to use API.
 
-If you want to set up your own Nanio stack, then I'd recommend using Docker for, check out the [docker-compose examples](https://github.com/rbw/nanio/tree/master/examples/docker).
+If you want to set up your own vanilla Nanio stack, then use Docker. Check out the **/examples** directory for compose files.
 
 Highlights
 ---
@@ -19,6 +18,17 @@ Highlights
 - Scalable (Spin up new instances using pre-made Docker images)
 - Customizable (Well structured and extensive configuration, with working set of defaults)
 - Secure (Requests relayed to the Node RPC server are carefully sanity checked)
+
+TODO
+---
+- Data layer
+- OAuth
+- WebSocket support
+- Monitoring component
+
+Requirements
+---
+Python>=3.6, Linux.
 
 Contributions
 ---
