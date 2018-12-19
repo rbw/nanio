@@ -14,13 +14,11 @@ class CoreSettings(Settings):
     port = fields.Integer(missing=5000)
     debug = fields.Bool(missing=False)
     workers = fields.Integer(missing=0)
-    access_log = fields.Bool(missing=False)
 
 
 class RPCSettings(Settings):
     enabled = fields.Bool(missing=False)
     nodes = fields.List(fields.String(), missing=[])
-    proxy_path = fields.String(missing='/')
+    path = fields.String(missing='/')
     actions_public = fields.List(fields.String(), missing=[])
     actions_protected = fields.List(fields.String(), missing=[])
-

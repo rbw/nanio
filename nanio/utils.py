@@ -3,17 +3,8 @@
 import yaml
 
 
-async def http_post(session, url, payload):
-    async with session.post(url, data=payload) as result:
-        return await result.json()
-
-
-def from_yaml(path):
-    """yml => dict
-
-    :param path: file path
-    :return: contents
-    """
-
+def yaml_parse(_dir, file):
+    path = '{0}/{1}'.format(_dir, file)
     with open(path, 'r') as stream:
-        return yaml.load(stream) or {}
+        return yaml.load(stream)
+
