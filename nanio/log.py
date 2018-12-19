@@ -58,6 +58,5 @@ LOGGING_CONFIG_DEFAULTS = dict(
 )
 
 
-class Log:
-    root = logging.getLogger('root')
-    api = logging.getLogger('nanio.api')
+log_root = logging.getLogger('root')
+log_api = logging.getLogger('nanio.api')

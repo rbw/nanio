@@ -9,10 +9,8 @@ from sanic.exceptions import SanicException
 from nanio.exceptions import NanioException
 
 import nanio.config
-from nanio.log import LOGGING_CONFIG_DEFAULTS, Log
+from nanio.log import LOGGING_CONFIG_DEFAULTS, log_root, log_api
 from nanio.api import base, gateway
-
-log = Log.root
 
 
 def register_error_handlers(app):
@@ -22,7 +20,7 @@ def register_error_handlers(app):
 
         if isinstance(exception, NanioException):
             if exception.log_message:
-                log.error(msg)
+                log_root.error(msg)
 
         try:
             error = ujson.loads(msg)
@@ -33,7 +31,7 @@ def register_error_handlers(app):
 
 
 async def contextual_logging(request):
-    Log.api = LoggerAdapter(Log.api, {'remote_addr': request.remote_addr or request.ip})
+    handler = LoggerAdapter(log_api, {'remote_addr': request.remote_addr or request.ip})
 
 
 def create_app():
@@ -48,11 +46,11 @@ def create_app():
     # Register Node RPC API gateway
     app.blueprint(gateway)
 
-    log.info('Nanio starting...')
+    log_root.info('Nanio starting...')
 
     if app.config['RPC_ENABLED']:
-        log.info('RPC backends: {0}'.format(','.join(app.config['RPC_NODES']) or 'None configured'))
+        log_root.info('RPC backends: {0}'.format(','.join(app.config['RPC_NODES']) or 'None configured'))
     else:
-        log.info('RPC proxy disabled')
+        log_root.info('RPC proxy disabled')
 
     return app
