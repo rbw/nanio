@@ -18,7 +18,7 @@ from .config import CoreSettings, RPCSettings
 from .network import AvailableSupply, Representatives, RepresentativesOnline, Republish
 from .node import Version
 
-SCHEMAS = [
+RPC_SCHEMAS = [
     # Network
     AvailableSupply(), Representatives(), RepresentativesOnline(), Republish(),
 
@@ -36,5 +36,4 @@ SCHEMAS = [
     PendingExists(),
 ]
 
-ACTIONS_SCHEMAS = {s.Meta.action: s for s in SCHEMAS}
 

@@ -8,5 +8,5 @@ bp = Blueprint(__name__, url_prefix='/node-rpc')
 
 @bp.route('/', methods=['POST'])
 async def post(request):
-    relay_response = await nano_service.send(request.json)
-    return response.json(relay_response)
+    relay_result, status = await nano_service.send(request.json)
+    return response.json(relay_result, status=status)

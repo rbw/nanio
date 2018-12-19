@@ -8,26 +8,24 @@ from aiohttp.http_exceptions import HttpProcessingError
 from marshmallow import ValidationError
 
 from nanio.exceptions import NanioException
-from nanio.schemas import ACTIONS_SCHEMAS
+from nanio.schemas import RPC_SCHEMAS
 from nanio.config import (
     RPC_NODES, RPC_ENABLED,
     RPC_ACTIONS_PUBLIC, RPC_ACTIONS_PROTECTED,
 )
 
-from ._base import Service
+from .base import NanioService
 
 
-class NanoService(Service):
+class Schemas:
     def __init__(self):
-        self.rpc_url = RPC_NODES[0]
-        self.rpc_schemas = self.get_rpc_schemas()
+        self.by_action = {s.Meta.action: s for s in RPC_SCHEMAS}
+        self.by_category = self.__get_by_category()
 
-    async def get_rpc_schemas(self):
-        self.log.info('GET RPC schemas')
-
+    def __get_by_category(self):
         groups = {}
 
-        for _, schema in sorted(ACTIONS_SCHEMAS.items()):
+        for _, schema in sorted(self.by_action.items()):
             group = schema.Meta.group
             action = schema.Meta.action
 
@@ -56,12 +54,21 @@ class NanoService(Service):
 
         return groups
 
+
+class NanoService(NanioService):
+    def __init__(self):
+        self.node_url = 'http://' + RPC_NODES[0]
+        self.schemas = Schemas()
+
+    async def node_rpc_request(self, payload):
+        return await self.http_post(self.node_url, payload)
+
     async def validate_body(self, body):
         if not body or 'action' not in body:
             raise NanioException('Missing action in payload', 400)
 
         action = body['action']
-        schema = ACTIONS_SCHEMAS.get(action, None)
+        schema = self.schemas.by_action.get(action, None)
 
         if not schema:
             raise NanioException('Unknown action', 422)
@@ -96,10 +103,10 @@ class NanoService(Service):
             self.log.info('Send [{0}]'.format(payload['action']))
 
         try:
-            status, result = self.http_post(payload)
+            result, status = await self.http_post(self.node_url, payload)
 
             if self.debug:
-                self.log.debug('Receive [{0}]:\n{1}'.format(body['action'], ujson.dumps(result)))
+                self.log.debug('Receive [{0}]:\n{1}'.format(body['action'], result))
 
             if 'error' in result:
                 raise NanioException(result['error'], status)
@@ -111,4 +118,4 @@ class NanoService(Service):
             self.log.warning('{0} (action: {1}) '.format(err.message, body['action']))
             raise NanioException(err.message, err.code)
 
-        return status, result
+        return result, status

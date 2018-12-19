@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sanic import Blueprint
-from .nano import gateway, schemas
+from .node import gateway, schemas
 
 base = Blueprint.group(
     schemas,

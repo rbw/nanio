@@ -7,6 +7,5 @@ bp = Blueprint(__name__, url_prefix='/schemas')
 
 
 @bp.route('/', methods=['GET'])
-async def get(request):
-    schemas = await nano_service.get_rpc_schemas()
-    return response.json(schemas, 200)
+async def get(_):
+    return response.json(nano_service.schemas.by_category, 200)

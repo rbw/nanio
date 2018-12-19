@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import ujson
+import aiohttp
 
 from logging import LoggerAdapter
 from sanic import Sanic, response
@@ -11,6 +12,7 @@ from nanio.exceptions import NanioException
 import nanio.config
 from nanio.log import LOGGING_CONFIG_DEFAULTS, log_root, log_api
 from nanio.api import base, gateway
+from nanio.services.base import NanioService
 
 
 def register_error_handlers(app):
@@ -30,15 +32,33 @@ def register_error_handlers(app):
         return response.json(body={'error': error}, status=exception.status_code)
 
 
+async def client_create(app, loop):
+    app.http_client = aiohttp.ClientSession(loop=loop)
+    NanioService.set_http_client(app.http_client)
+
+
+async def client_destroy(app, loop):
+    loop.run_until_complete(app.http_client.close())
+    loop.close()
+
+
 async def contextual_logging(request):
-    handler = LoggerAdapter(log_api, {'remote_addr': request.remote_addr or request.ip})
+    NanioService.log = LoggerAdapter(log_api, {'remote_addr': request.remote_addr or request.ip})
 
 
 def create_app():
     app = Sanic('nanio', log_config=LOGGING_CONFIG_DEFAULTS)
     app.config.from_object(nanio.config)
+
+    # Register error handler for catching exceptions and converting to JSON formatted errors
     register_error_handlers(app)
+
+    # Add contextual logger middleware
     app.register_middleware(contextual_logging, 'request')
+
+    # Register aiohttp client
+    app.register_listener(client_create, 'before_server_start')
+    app.register_listener(client_destroy, 'after_server_stop')
 
     # Register base /api
     app.blueprint(base)
