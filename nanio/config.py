@@ -56,20 +56,8 @@ RPC_ACTIONS_PUBLIC = to_list(env.get('RPC_ACTIONS_PUBLIC')) or yml_rpc['actions_
 RPC_ACTIONS_PROTECTED = to_list(env.get('RPC_ACTIONS_PROTECTED')) or yml_rpc['actions_protected']
 
 # Override Sanic defaults
-LOGO = False
+LOGO = None
 REQUEST_MAX_SIZE = 1000000
 
-# MongoDB settings
-"""MONGODB_USERNAME = os.environ.get("MONGODB_USERNAME", "user")
-MONGODB_PASSWORD = os.environ.get("MONGODB_PASSWORD", "password")
-MONGODB_HOST = os.environ.get("MONGODB_HOST", "mongodb")
-MONGODB_PORT = to_int(os.environ.get("MONGODB_PORT", 27017))
-MONGODB_DATABASE = os.environ.get("MONGODB_DATABASE", "")
-MONGODB_URI = 'mongodb://{}:{}@{}:{}/{}'.format(
-    MONGODB_USERNAME,
-    MONGODB_PASSWORD,
-    MONGODB_HOST,
-    MONGODB_PORT,
-    MONGODB_DATABASE
-)
-"""
+# MongoDB
+MONGODB_HOST = env.get('MONGODB_HOST') or yml_core['mongodb_host']

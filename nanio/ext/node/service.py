@@ -9,9 +9,10 @@ from marshmallow import ValidationError
 
 from nanio.exceptions import NanioException
 from nanio.config import RPC_NODES, RPC_ACTIONS_PUBLIC, RPC_ACTIONS_PROTECTED
-from nanio.ext.common import NanioService
+from nanio.ext.base.service import NanioService
 
 from .schemas import RPC_SCHEMAS
+from .models import Test
 
 
 class Schemas:
@@ -94,7 +95,7 @@ class NodeService(NanioService):
         if self.debug:
             self.log.debug('Send [{0}]:\n{1}'.format(body['action'], payload))
         else:
-            self.log.info('Send [{0}]'.format(payload['action']))
+            self.log.info('Send [{0}]'.format(body['action']))
 
         try:
             result, status = await self.http_post(self.node_url, payload)

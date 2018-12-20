@@ -14,6 +14,7 @@ class CoreSettings(Settings):
     port = fields.Integer(missing=5000)
     debug = fields.Bool(missing=False)
     workers = fields.Integer(missing=0)
+    mongodb_host = fields.String(missing='127.0.0.1')
 
 
 class RPCSettings(Settings):

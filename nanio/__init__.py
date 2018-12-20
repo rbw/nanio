@@ -4,8 +4,9 @@ import ujson
 import aiohttp
 
 from logging import LoggerAdapter
-from sanic import Sanic, response
+from motor.motor_asyncio import AsyncIOMotorClient
 
+from sanic import Sanic, response
 from sanic.exceptions import SanicException
 from nanio.exceptions import NanioException
 
@@ -31,13 +32,19 @@ def register_error_handlers(app):
         return response.json(body={'error': error}, status=exception.status_code)
 
 
-async def client_create(app, loop):
-    app.http_client = aiohttp.ClientSession(loop=loop)
-    NanioService.set_http_client(app.http_client)
+async def server_start(app, loop):
+    # Install reusable HTTP client
+    NanioService.http_client = aiohttp.ClientSession(loop=loop)
+
+    # Register blueprints and install DB client and ODM
+    mongodb_host = app.config['MONGODB_HOST']
+    motor = AsyncIOMotorClient(mongodb_host, io_loop=loop)
+    registry.init(app, motor)
 
 
-async def client_destroy(app, loop):
-    loop.run_until_complete(app.http_client.close())
+async def server_stop(app, loop):
+    # loop.run_until_complete(NanioService.http_client.close())
+    # loop.run_until_complete(NanioService.db_client.close())
     loop.close()
 
 
@@ -56,16 +63,8 @@ def create_app():
     app.register_middleware(contextual_logging, 'request')
 
     # Register aiohttp client
-    app.register_listener(client_create, 'before_server_start')
-    app.register_listener(client_destroy, 'after_server_stop')
-
-    # Add extension registry to app
-    app.ext = registry
-
-    # Register blueprints from AppRegistry
-    app.blueprint(registry.blueprints)
-
-    log_root.info('Nanio starting...')
+    app.register_listener(server_start, 'before_server_start')
+    app.register_listener(server_stop, 'after_server_stop')
 
     if app.config['RPC_ENABLED']:
         log_root.info('RPC backends: {0}'.format(','.join(app.config['RPC_NODES']) or 'None configured'))

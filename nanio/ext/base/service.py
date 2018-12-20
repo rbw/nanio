@@ -1,17 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from nanio.log import log_api
 from nanio.config import APP_DEBUG
+from umongo import MotorAsyncIOInstance
 
 
 class NanioService:
-    debug = APP_DEBUG
-    log = log_api
-    http_client = None
+    __db__ = None
 
-    @classmethod
-    def set_http_client(cls, client):
-        cls.http_client = client
+    motor = None
+    umongo = None
+
+    http_client = None
+    log = None
+
+    debug = APP_DEBUG
+
+    def models_register(self, models):
+        self.__db__ = MotorAsyncIOInstance()
+        for model in models:
+            self.__db__.register(model, as_attribute=True)
 
     @classmethod
     async def http_post(cls, url, payload):

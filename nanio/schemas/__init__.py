@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from .config import CoreSettings, RPCSettings
+from .settings import CoreSettings, RPCSettings
