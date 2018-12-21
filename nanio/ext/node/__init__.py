@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from .controller import bp
+from .controller import NodeController
 from .service import NodeService
-from .models import Test
+from nanio.ext import Extension
 
-core_node = (bp, NodeService(), [Test])
+EXTENSION__NODE = Extension(
+    name='node',
+    controllers=[NodeController],
+    service=NodeService(),
+    documents=[]
+)

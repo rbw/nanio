@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from nanio import create_app
+from nanio import Nanio
 from nanio.log import log_root
+from nanio.ext.node import EXTENSION__NODE
 
 
 def main():
-    app = create_app()
+    app = Nanio()
 
     log_root.info('Nanio starting...')
+
+    app.register_extensions([
+        EXTENSION__NODE
+    ])
 
     app.run(
         host=app.config['APP_HOST'],

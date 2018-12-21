@@ -45,7 +45,8 @@ LOGGING_CONFIG_DEFAULTS = dict(
     },
     formatters={
         'api_access': {
-            'format': '[%(levelname)1.1s %(asctime)s.%(msecs)03d %(remote_addr)s] %(message)s',
+            # 'format': '[%(levelname)1.1s %(asctime)s.%(msecs)03d %(name)s %(remote_addr)s] %(message)s',
+            'format': '[%(levelname)1.1s %(asctime)s.%(msecs)03d %(name)s] %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S',
             'class': 'logging.Formatter'
         },
@@ -59,4 +60,3 @@ LOGGING_CONFIG_DEFAULTS = dict(
 
 
 log_root = logging.getLogger('root')
-log_api = logging.getLogger('nanio.api')

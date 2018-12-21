@@ -9,10 +9,9 @@ from marshmallow import ValidationError
 
 from nanio.exceptions import NanioException
 from nanio.config import RPC_NODES, RPC_ACTIONS_PUBLIC, RPC_ACTIONS_PROTECTED
-from nanio.ext.base.service import NanioService
+from nanio.ext import BaseService
 
 from .schemas import RPC_SCHEMAS
-from .models import Test
 
 
 class Schemas:
@@ -53,7 +52,7 @@ class Schemas:
         return groups
 
 
-class NodeService(NanioService):
+class NodeService(BaseService):
     def __init__(self):
         self.node_url = 'http://' + RPC_NODES[0]
         self.schemas = Schemas()

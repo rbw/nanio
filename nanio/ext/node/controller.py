@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from sanic import Blueprint, response
+from sanic import response
 from nanio.config import RPC_ENABLED
+from nanio.ext import BaseController
 
 
-bp = Blueprint('node', url_prefix='/node')
+class NodeController(BaseController):
+    path_relative = '/'
 
+    async def get(self, req):
+        # cursor = self.svc.db.Test.find()
+        # print(await cursor.to_list(10))
 
-@bp.route('/', methods=['GET'])
-async def get(req):
-    node = req.app.ext['node']
-    node.log.debug('Sending node RPC schemas...')
-    return response.json(node.schemas.by_category, 200)
+        self.svc.log.debug('Sending node RPC schemas...')
+        return response.json(self.svc.schemas.by_category, 200)
 
+    async def post(self, req):
+        if not RPC_ENABLED:
+            return {'result': 'RPC relay disabled'}, 200
 
-@bp.route('/', methods=['POST'])
-async def post(req):
-    if not RPC_ENABLED:
-        return {'result': 'RPC gateway is disabled'}, 200
-
-    relay_result, status = await req.app.ext['node'].send(req.json)
-    return response.json(relay_result, status=status)
+        relay_result, status = await self.svc.send(req.json)
+        return response.json(relay_result, status=status)

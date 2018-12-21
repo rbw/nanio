@@ -2,8 +2,7 @@ sanic>=0.8.3
 libn>=0.1.8
 aiohttp>=2.3.9
 ujson>=1.35
-motor>=2.0.0
-umongo>=1.0.0
+umongo[motor]>=1.0.0
 marshmallow>=2.16.3
 six>=1.11.0
 toastedmarshmallow==0.2.5

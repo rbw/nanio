@@ -1,36 +1,41 @@
 # -*- coding: utf-8 -*-
 
-from sanic import Blueprint
-from .base.service import NanioService
-from .node import core_node
+from sanic.views import HTTPMethodView
+from nanio.config import APP_DEBUG
 
 
-class Registry:
-    def __init__(self):
-        self._blueprints = []
-        self.services = {}
-        self.base_path = '/api'
+class BaseController(HTTPMethodView):
+    view = None
+    svc = None
+    db = None
+    ext = {}
 
-    def __getitem__(self, service_name):
-        assert service_name in self.services
-        return self.services[service_name]
-
-    def init(self, app, motor):
-        app.ext = {}
-        app.blueprint(Blueprint.group(
-            *self._blueprints,
-            url_prefix=self.base_path
-        ))
-
-        for name, service in self.services.items():
-            service.__db__.init(motor[name])
-            app.ext[name] = service
-
-    def register(self, blueprint, service, models):
-        self._blueprints.append(blueprint)
-        self.services[blueprint.name] = service
-        service.models_register(models)
+    def dispatch_request(self, req, *args, **kwargs):
+        # TODO: Inject remote_addr? Is it worth the overhead?
+        # self.svc.log = LoggerAdapter(self.svc.log, {'remote_addr': req.remote_addr or req.ip})
+        return super(BaseController, self).dispatch_request(req, *args, **kwargs)
 
 
-registry = Registry()
-registry.register(*core_node)
+class Extension:
+    db = None
+    http_client = None
+
+    def __init__(self, name, controllers, service, documents):
+        self.name = name
+        self.db_name = 'nanio__'.format(name)
+
+        self.controllers = controllers
+        self.documents = documents
+        self.svc = service
+
+
+class BaseService:
+    db = None
+    log = None
+    http_client = None
+    debug = APP_DEBUG
+
+    async def http_post(self, url, payload):
+        async with self.http_client.post(url, data=payload) as resp:
+            result = await resp.json()
+            return result, resp.status
