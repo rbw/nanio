@@ -17,9 +17,6 @@ class BaseController(HTTPMethodView):
 
 
 class Extension:
-    db = None
-    http_client = None
-
     def __init__(self, name, controllers, service, documents):
         self.name = name
         self.db_name = 'nanio__'.format(name)
@@ -30,7 +27,7 @@ class Extension:
 
 
 class BaseService:
-    db = None
+    docs = None
     log = None
     http_client = None
     debug = APP_DEBUG

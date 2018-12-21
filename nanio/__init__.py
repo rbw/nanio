@@ -19,7 +19,7 @@ def server_start(app, loop):
 
     for ext in app.extensions.values():
         ext.svc.http_client = http_client
-        ext.svc.db = Instance(motor[ext.name])
+        ext.svc.docs = Instance(motor[ext.name])
         ext.svc.log = logging.getLogger('nanio.api.{0}'.format(ext.name))
         ext.svc.ext = app.extensions
 
@@ -37,7 +37,7 @@ def server_start(app, loop):
             app.add_route(ctrl.as_view(), path)
 
         for document in ext.documents:
-            ext.svc.db.register(document, as_attribute=True)
+            ext.svc.docs.register(document, as_attribute=True)
 
 
 def server_stop(app, loop):
@@ -62,8 +62,10 @@ class Nanio(Sanic):
         # Register error handler for catching exceptions and converting to JSON formatted errors
         self.register_error_handlers()
 
-        # Register aiohttp client
+        # Startup listener -- extension registration (controllers, documents, services etc).
         self.register_listener(server_start, 'before_server_start')
+
+        # Shutdown listener
         self.register_listener(server_stop, 'after_server_stop')
 
     def register_error_handlers(self):

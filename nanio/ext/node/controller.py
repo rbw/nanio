@@ -11,8 +11,6 @@ class NodeController(BaseController):
     async def get(self, req):
         # cursor = self.svc.db.Test.find()
         # print(await cursor.to_list(10))
-
-        self.svc.log.debug('Sending node RPC schemas...')
         return response.json(self.svc.schemas.by_category, 200)
 
     async def post(self, req):

@@ -4,5 +4,5 @@ from umongo import Document
 from umongo.fields import StringField
 
 
-class Test(Document):
+class Example(Document):
     test = StringField(required=True, allow_none=False)

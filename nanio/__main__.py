@@ -2,7 +2,8 @@
 
 from nanio import Nanio
 from nanio.log import log_root
-from nanio.ext.node import EXTENSION__NODE
+from nanio.ext.node import NODE
+from nanio.ext.example import EXAMPLE
 
 
 def main():
@@ -11,7 +12,8 @@ def main():
     log_root.info('Nanio starting...')
 
     app.register_extensions([
-        EXTENSION__NODE
+        NODE,
+        EXAMPLE
     ])
 
     app.run(

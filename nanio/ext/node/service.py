@@ -60,7 +60,7 @@ class NodeService(BaseService):
     async def node_rpc_request(self, payload):
         return await self.http_post(self.node_url, payload)
 
-    async def validate_body(self, body):
+    async def validate_command(self, body):
         if not body or 'action' not in body:
             raise NanioException('Missing action in payload', 400)
 
@@ -89,18 +89,18 @@ class NodeService(BaseService):
         return schema.dumps(validated).data
 
     async def send(self, body):
-        payload = await self.validate_body(body)
+        command = await self.validate_command(body)
 
         if self.debug:
-            self.log.debug('Send [{0}]:\n{1}'.format(body['action'], payload))
+            self.log.debug('Command relay [{0}]:\n{1}'.format(body['action'], command))
         else:
-            self.log.info('Send [{0}]'.format(body['action']))
+            self.log.info('Command relay [{0}]'.format(body['action']))
 
         try:
-            result, status = await self.http_post(self.node_url, payload)
+            result, status = await self.http_post(self.node_url, command)
 
             if self.debug:
-                self.log.debug('Receive [{0}]:\n{1}'.format(body['action'], result))
+                self.log.debug('Relay response [{0}]:\n{1}'.format(body['action'], result))
 
             if 'error' in result:
                 raise NanioException(result['error'], status)
