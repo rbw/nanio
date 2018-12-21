@@ -4,6 +4,7 @@ nodes:
   - 127.0.0.1:7076
 proxy_path: /node-rpc
 actions_public:
+    - version
     - validate_account_number
     - available_supply
     - process
@@ -13,7 +14,6 @@ actions_public:
     - frontier_count
     - republish
     - peers
-    - version
     - block
     - block_account
     - blocks_info

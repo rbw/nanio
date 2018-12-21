@@ -10,11 +10,11 @@ class Settings(Schema):
 
 
 class CoreSettings(Settings):
-    host = fields.String(missing='127.0.0.1')
-    port = fields.Integer(missing=5000)
+    listen_host = fields.String(missing='127.0.0.1')
+    listen_port = fields.Integer(missing=5000)
+    mongodb_host = fields.String(missing='127.0.0.1')
     debug = fields.Bool(missing=False)
     workers = fields.Integer(missing=0)
-    mongodb_host = fields.String(missing='127.0.0.1')
 
 
 class RPCSettings(Settings):

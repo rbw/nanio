@@ -42,10 +42,13 @@ yml_core = CoreSettings(strict=True).load(settings_from_yaml('core.yml')).data
 yml_rpc = RPCSettings(strict=True).load(settings_from_yaml('rpc.yml')).data
 
 # Create configuration as expected by Sanic, prefer environment over file.
-APP_HOST = env.get('APP_HOST') or yml_core['host']
-APP_PORT = to_int(env.get('APP_HOST')) or yml_core['port']
+APP_HOST = env.get('APP_HOST') or yml_core['listen_host']
+APP_PORT = to_int(env.get('APP_HOST')) or yml_core['listen_port']
 APP_DEBUG = to_bool(env.get('APP_DEBUG')) or yml_core['debug']
 APP_WORKERS = to_int(env.get('APP_WORKERS')) or yml_core['workers']
+
+# MongoDB
+MONGODB_HOST = env.get('MONGODB_HOST') or yml_core['mongodb_host']
 
 # Set up RPC
 RPC_ENABLED = to_bool(env.get('RPC_ENABLED')) or yml_rpc['enabled']
@@ -58,6 +61,3 @@ RPC_ACTIONS_PROTECTED = to_list(env.get('RPC_ACTIONS_PROTECTED')) or yml_rpc['ac
 # Override Sanic defaults
 LOGO = None
 REQUEST_MAX_SIZE = 1000000
-
-# MongoDB
-MONGODB_HOST = env.get('MONGODB_HOST') or yml_core['mongodb_host']
