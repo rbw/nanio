@@ -3,7 +3,7 @@
 from nanio import Nanio
 from nanio.log import log_root
 from nanio.ext.node import NODE
-from nanio.ext.example import EXAMPLE
+from nanio.ext.donate import DONATE
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
 
     app.register_extensions([
         NODE,
-        EXAMPLE
+        DONATE
     ])
 
     app.run(

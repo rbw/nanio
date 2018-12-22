@@ -1,10 +1,9 @@
-# Nano RPC node_proxy configuration
+# Nano RPC configuration
 enabled: true
 nodes:
   - 127.0.0.1:7076
-proxy_path: /node-rpc
-actions_public:
-    - version
+commands:
+  public:  # Commands available for everyone
     - validate_account_number
     - available_supply
     - process
@@ -14,6 +13,7 @@ actions_public:
     - frontier_count
     - republish
     - peers
+    - version
     - block
     - block_account
     - blocks_info
@@ -31,5 +31,16 @@ actions_public:
     - accounts_balances
     - accounts_pending
     - accounts_frontiers
-actions_protected:
-    - test
+    - mrai_from_raw
+    - mrai_to_raw
+    - krai_from_raw
+    - krai_to_raw
+    - rai_from_raw
+    - rai_to_raw
+  protected:  # Protected commands, requires authentication
+    - payment_begin
+    - payment_end
+    - payment_wait
+    - payment_init
+  private:  # Commands available for internal use only
+    - wallet_create

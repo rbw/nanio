@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
+from nanio.ext.validation import _validate_hex
 
-from ._base import Action, BaseMeta
-from ._validation import _validate_hex
+from ._base import Command, BaseMeta
 
 
 class NetworkMeta(BaseMeta):
     group = 'Network'
 
 
-class AvailableSupply(Action):
+class AvailableSupply(Command):
     class Meta(NetworkMeta):
         name = 'Available supply'
         action = 'available_supply'
@@ -25,7 +25,7 @@ class AvailableSupply(Action):
         }
 
 
-class Representatives(Action):
+class Representatives(Command):
     class Meta(NetworkMeta):
         name = 'Representatives'
         action = 'representatives'
@@ -42,7 +42,7 @@ class Representatives(Action):
     sorting = fields.Boolean(required=False, default=True)
 
 
-class RepresentativesOnline(Action):
+class RepresentativesOnline(Command):
     class Meta(NetworkMeta):
         name = 'Representatives online'
         action = 'representatives_online'
@@ -55,7 +55,7 @@ class RepresentativesOnline(Action):
         }
 
 
-class Republish(Action):
+class Republish(Command):
     class Meta(NetworkMeta):
         name = 'Republish'
         action = 'republish'

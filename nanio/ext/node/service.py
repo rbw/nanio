@@ -8,15 +8,15 @@ from aiohttp.http_exceptions import HttpProcessingError
 from marshmallow import ValidationError
 
 from nanio.exceptions import NanioException
-from nanio.config import RPC_NODES, RPC_ACTIONS_PUBLIC, RPC_ACTIONS_PROTECTED
+from nanio.config import RPC_NODES, RPC_COMMANDS_PUBLIC, RPC_COMMANDS_PROTECTED, RPC_COMMANDS_PRIVATE
 from nanio.ext import BaseService
 
-from .schemas import RPC_SCHEMAS
+from .schemas import COMMANDS_SCHEMAS
 
 
 class Schemas:
     def __init__(self):
-        self.by_action = {s.Meta.action: s for s in RPC_SCHEMAS}
+        self.by_action = {s.Meta.action: s for s in COMMANDS_SCHEMAS}
         self.by_category = self.__get_by_category()
 
     def __get_by_category(self):
@@ -26,12 +26,19 @@ class Schemas:
             group = schema.Meta.group
             action = schema.Meta.action
 
+            if action in RPC_COMMANDS_PROTECTED:
+                access = 'protected'
+            elif action in RPC_COMMANDS_PRIVATE:
+                access = 'private'
+            else:
+                access = 'public'
+
             action = {
                 'name': schema.Meta.name,
                 'action': action,
                 'description': schema.Meta.description,
-                'enabled': action in RPC_ACTIONS_PUBLIC + RPC_ACTIONS_PROTECTED,
-                'protected': action in RPC_ACTIONS_PROTECTED,
+                'enabled': action in RPC_COMMANDS_PUBLIC + RPC_COMMANDS_PROTECTED + RPC_COMMANDS_PRIVATE,
+                'access': access,
                 'examples': schema.Meta.examples,
                 'fields': []
             }
@@ -60,7 +67,7 @@ class NodeService(BaseService):
     async def node_rpc_request(self, payload):
         return await self.http_post(self.node_url, payload)
 
-    async def validate_command(self, body):
+    async def validate_command(self, body, is_internal):
         if not body or 'action' not in body:
             raise NanioException('Missing action in payload', 400)
 
@@ -68,11 +75,13 @@ class NodeService(BaseService):
         schema = self.schemas.by_action.get(action, None)
 
         if not schema:
-            raise NanioException('Unknown action', 422)
-        elif action not in RPC_ACTIONS_PUBLIC:
-            raise NanioException('Disabled action', 422)
-        elif action in RPC_ACTIONS_PROTECTED:
-            print('PROTECTED! -- add auth')
+            raise NanioException('Unknown command', 404)
+        elif is_internal:
+            pass
+        elif action in RPC_COMMANDS_PRIVATE:
+            raise NanioException('Forbidden', 403)
+        elif action in RPC_COMMANDS_PROTECTED and True:  # TODO: check auth
+            raise NanioException('Unauthorized', 401)
 
         try:
             validated = schema.load(body).data
@@ -88,8 +97,8 @@ class NodeService(BaseService):
 
         return schema.dumps(validated).data
 
-    async def send(self, body):
-        command = await self.validate_command(body)
+    async def send(self, body, is_internal=False):
+        command = await self.validate_command(body, is_internal)
 
         if self.debug:
             self.log.debug('Command relay [{0}]:\n{1}'.format(body['action'], command))

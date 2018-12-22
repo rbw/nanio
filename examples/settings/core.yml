@@ -3,5 +3,6 @@
 listen_host: 0.0.0.0
 listen_port: 8080
 mongodb_host: 127.0.0.1
+mongodb_port: 127.0.0.1
 debug: true
 workers: 4

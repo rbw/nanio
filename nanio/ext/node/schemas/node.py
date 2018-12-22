@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from ._base import Action, BaseMeta
+from ._base import Command, BaseMeta
 
 
 class NodeMeta(BaseMeta):
     group = 'Node'
 
 
-class Version(Action):
+class Version(Command):
     class Meta(NodeMeta):
         name = 'Retrieve node versions'
         action = 'version'

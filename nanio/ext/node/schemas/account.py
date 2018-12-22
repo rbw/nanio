@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
+from nanio.ext.validation import _validate_address, _validate_balance, _validate_hex
 
-from ._base import Action, BaseMeta
-from ._validation import _validate_address, _validate_balance, _validate_hex
+from ._base import Command, BaseMeta
 
 
 class AccountMeta(BaseMeta):
     group = 'Account'
 
 
-class Account(Action):
+class Account(Command):
     class Meta(AccountMeta):
         pass
 
     account = fields.String(required=True, validate=_validate_address, description='Address ("xrb_1ipx8...")')
 
 
-class Accounts(Action):
+class Accounts(Command):
     class Meta(AccountMeta):
         pass
 

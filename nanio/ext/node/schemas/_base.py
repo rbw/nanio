@@ -12,7 +12,7 @@ class BaseMeta:
     desc = None
 
 
-class Action(Schema):
+class Command(Schema):
     class Meta(BaseMeta):
         pass
 

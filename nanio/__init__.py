@@ -14,14 +14,14 @@ from nanio.log import LOGGING_CONFIG_DEFAULTS, log_root
 
 
 def server_start(app, loop):
-    app.motor = motor = AsyncIOMotorClient(app.config['MONGODB_HOST'], io_loop=loop)
+    mongodb_address = '{0}:{1}'.format(app.config['MONGODB_HOST'], app.config['MONGODB_PORT'])
+    app.motor = motor = AsyncIOMotorClient(mongodb_address, io_loop=loop)
     app.http_client = http_client = aiohttp.ClientSession(loop=loop)
 
     for ext in app.extensions.values():
         ext.svc.http_client = http_client
         ext.svc.docs = Instance(motor[ext.name])
         ext.svc.log = logging.getLogger('nanio.api.{0}'.format(ext.name))
-        ext.svc.ext = app.extensions
 
         for ctrl in ext.controllers:
             rp = ctrl.path_relative
@@ -31,13 +31,14 @@ def server_start(app, loop):
             path = '{0}/{1}/{2}'.format(
                 app.base_path,
                 ext.name,
-                rp[:-1] if rp.startswith('/') else rp
+                rp[1:] if rp.startswith('/') else rp
             ).rstrip('/')
 
             app.add_route(ctrl.as_view(), path)
 
         for document in ext.documents:
-            ext.svc.docs.register(document, as_attribute=True)
+            registered = ext.svc.docs.register(document, as_attribute=True)
+            registered.ensure_indexes()
 
 
 def server_stop(app, loop):
@@ -57,6 +58,7 @@ class Nanio(Sanic):
             log_config=kwargs.pop('log_config', LOGGING_CONFIG_DEFAULTS),
             **kwargs
         )
+
         self.config.from_object(nanio.config)
 
         # Register error handler for catching exceptions and converting to JSON formatted errors
@@ -70,7 +72,7 @@ class Nanio(Sanic):
 
     def register_error_handlers(self):
         @self.exception(SanicException)
-        async def sanic_error(_, exception):
+        async def nanio_error(_, exception):
             msg = exception.__str__()
 
             if isinstance(exception, NanioException):
@@ -87,4 +89,3 @@ class Nanio(Sanic):
     def register_extensions(self, extensions):
         for extension in extensions:
             self.extensions[extension.name] = extension
-

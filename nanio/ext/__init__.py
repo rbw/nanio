@@ -11,7 +11,7 @@ class BaseController(HTTPMethodView):
     ext = {}
 
     def dispatch_request(self, req, *args, **kwargs):
-        # TODO: Inject remote_addr? Is it worth the overhead?
+        # TODO: Inject remote_addr? Too much OH? -- Benchmark
         # self.svc.log = LoggerAdapter(self.svc.log, {'remote_addr': req.remote_addr or req.ip})
         return super(BaseController, self).dispatch_request(req, *args, **kwargs)
 
@@ -30,6 +30,7 @@ class BaseService:
     docs = None
     log = None
     http_client = None
+    ext = {}
     debug = APP_DEBUG
 
     async def http_post(self, url, payload):

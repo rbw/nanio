@@ -2,14 +2,13 @@
 
 import ujson
 from marshmallow import fields, Schema, pre_load, post_dump, ValidationError
-
-from ._base import Action, BaseMeta
-
-from ._validation import (
+from nanio.ext.validation import (
     _validate_address, _validate_balance,
     _validate_hex, _validate_link,
     _validate_previous, _validate_type
 )
+
+from ._base import Command, BaseMeta
 
 
 class BlockMeta(BaseMeta):
@@ -27,21 +26,21 @@ class StateBlock(Schema):
     work = fields.String(required=True, validate=_validate_hex)
 
 
-class BlockAction(Action):
+class BlockCommand(Command):
     class Meta(BlockMeta):
         pass
 
     block = fields.String(required=True, validate=_validate_hex)
 
 
-class HashBlock(Action):
+class HashBlock(Command):
     class Meta(BlockMeta):
         pass
 
     hash = fields.String(required=True, validate=_validate_hex)
 
 
-class HashesBlock(Action):
+class HashesBlock(Command):
     class Meta(BlockMeta):
         pass
 
@@ -56,7 +55,7 @@ class HashesBlock(Action):
     )
 
 
-class Process(Action):
+class Process(Command):
     class Meta(BlockMeta):
         name = 'Process block'
         action = 'process'
@@ -98,7 +97,7 @@ class Process(Action):
         return data
 
 
-class BlockCountType(Action):
+class BlockCountType(Command):
     class Meta(BlockMeta):
         name = 'Block count by type'
         action = 'block_count_type'
@@ -110,7 +109,7 @@ class BlockCountType(Action):
         }
 
 
-class BlockCount(Action):
+class BlockCount(Command):
     class Meta(BlockMeta):
         name = 'Block count'
         action = 'block_count'
@@ -234,7 +233,7 @@ class BlockAccount(HashBlock):
         }
 
 
-class Successors(BlockAction):
+class Successors(BlockCommand):
     class Meta(BlockMeta):
         name = 'Successors'
         action = 'successors'
@@ -248,7 +247,7 @@ class Successors(BlockAction):
         }
 
 
-class Chain(BlockAction):
+class Chain(BlockCommand):
     class Meta(BlockMeta):
         name = 'Chain'
         action = 'chain'

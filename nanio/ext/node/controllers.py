@@ -8,9 +8,7 @@ from nanio.ext import BaseController
 class NodeController(BaseController):
     path_relative = '/'
 
-    async def get(self, req):
-        # cursor = self.svc.db.Test.find()
-        # print(await cursor.to_list(10))
+    async def get(self, _):
         return response.json(self.svc.schemas.by_category, 200)
 
     async def post(self, req):
