@@ -2,7 +2,7 @@
 
 import ujson
 from marshmallow import fields, Schema, pre_load, post_dump, ValidationError
-from nanio.ext.validation import (
+from nanio.pkg.validation import (
     validate_address, validate_balance,
     validate_hex, validate_link,
     validate_previous, validate_type

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from nanio.ext import NanioExtension
+from nanio.pkg import NanioPackage
 
 from .controllers import NodeController
 from .service import NodeService
 
-NODE = NanioExtension(
+NODE = NanioPackage(
     name='node',
     controllers=[NodeController],
     service=NodeService,

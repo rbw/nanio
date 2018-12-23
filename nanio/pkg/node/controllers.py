@@ -2,7 +2,7 @@
 
 from sanic import response
 from nanio.config import RPC_ENABLED
-from nanio.ext import NanioController
+from nanio.pkg import NanioController
 
 
 class NodeController(NanioController):

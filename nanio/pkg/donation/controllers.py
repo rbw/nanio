@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sanic import response
-from nanio.ext import NanioController
+from nanio.pkg import NanioController
 
 
 class DonationController(NanioController):

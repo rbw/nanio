@@ -2,7 +2,7 @@
 
 from marshmallow import fields
 from nanio.config import REQUEST_TIMEOUT
-from nanio.ext.validation import validate_address, validate_balance, validate_hex
+from nanio.pkg.validation import validate_address, validate_balance, validate_hex
 
 from ._base import Command, BaseMeta
 

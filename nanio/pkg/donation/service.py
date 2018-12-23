@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from nanio.ext import NanioService
+from nanio.pkg import NanioService
 
 
 class DonationService(NanioService):
@@ -10,7 +10,7 @@ class DonationService(NanioService):
         self.wallet = self.docs.Wallet
 
     async def node_send(self, command):
-        data, _ = await self.ext.node.svc.send(command)
+        data, _ = await self.pkg.node.svc.send(command)
         return data
 
     async def wallet_get(self):
@@ -25,7 +25,9 @@ class DonationService(NanioService):
         wallet = await self.wallet(wallet_id=wallet_id).commit()
         return wallet
 
-    async def donation_create(self, ip_addr):
+    async def donation_create(self, req):
+        ip_addr = req.remote_addr or req.ip
+
         pending = self.donation(
             message='test',
             address_from='xrb_3oecmxdde1eji5i9n8gpp3a6bno76etn7xuh35b7opjr15p6wif87ktwrqd6',
@@ -33,6 +35,7 @@ class DonationService(NanioService):
             pending=True,
             origin_addr=ip_addr
         )
+
         pending.commit()
         return self.donation.dump(pending)
 
@@ -42,8 +45,7 @@ class DonationService(NanioService):
         # account = await self.node_send({'action': 'payment_begin', 'wallet': wallet_ref['wallet_id']})
         # print(account)
         # print(await cursor.to_list(10))
-        return await self.donation_create(ip_addr=req.remote_addr or req.ip)
-
+        return await self.donation_create(req)
 
 
 """class DonationPending(Document):
