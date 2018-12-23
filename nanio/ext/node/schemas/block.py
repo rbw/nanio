@@ -3,9 +3,9 @@
 import ujson
 from marshmallow import fields, Schema, pre_load, post_dump, ValidationError
 from nanio.ext.validation import (
-    _validate_address, _validate_balance,
-    _validate_hex, _validate_link,
-    _validate_previous, _validate_type
+    validate_address, validate_balance,
+    validate_hex, validate_link,
+    validate_previous, validate_type
 )
 
 from ._base import Command, BaseMeta
@@ -16,28 +16,28 @@ class BlockMeta(BaseMeta):
 
 
 class StateBlock(Schema):
-    type = fields.String(required=True, validate=_validate_type)
-    account = fields.String(required=True, validate=_validate_address)
-    previous = fields.String(required=True, validate=_validate_previous)
-    representative = fields.String(required=False, validate=_validate_address)
-    balance = fields.String(required=True, validate=_validate_balance)
-    link = fields.String(required=True, validate=_validate_link)
-    signature = fields.String(required=True, validate=_validate_hex)
-    work = fields.String(required=True, validate=_validate_hex)
+    type = fields.String(required=True, validate=validate_type)
+    account = fields.String(required=True, validate=validate_address)
+    previous = fields.String(required=True, validate=validate_previous)
+    representative = fields.String(required=False, validate=validate_address)
+    balance = fields.String(required=True, validate=validate_balance)
+    link = fields.String(required=True, validate=validate_link)
+    signature = fields.String(required=True, validate=validate_hex)
+    work = fields.String(required=True, validate=validate_hex)
 
 
 class BlockCommand(Command):
     class Meta(BlockMeta):
         pass
 
-    block = fields.String(required=True, validate=_validate_hex)
+    block = fields.String(required=True, validate=validate_hex)
 
 
 class HashBlock(Command):
     class Meta(BlockMeta):
         pass
 
-    hash = fields.String(required=True, validate=_validate_hex)
+    hash = fields.String(required=True, validate=validate_hex)
 
 
 class HashesBlock(Command):
@@ -46,7 +46,7 @@ class HashesBlock(Command):
 
     hashes = fields.List(
         fields.String(
-            validate=_validate_hex,
+            validate=validate_hex,
             required=True
         ),
         required=True,
@@ -262,5 +262,5 @@ class Chain(BlockCommand):
             },
         }
 
-    block = fields.String(required=True, validate=_validate_hex)
+    block = fields.String(required=True, validate=validate_hex)
     count = fields.Integer(required=False, default=-1)

@@ -3,18 +3,13 @@
 from nanio import Nanio
 from nanio.log import log_root
 from nanio.ext.node import NODE
-from nanio.ext.donate import DONATE
+from nanio.ext.donation import DONATION
 
 
 def main():
-    app = Nanio()
+    app = Nanio([NODE, DONATION])
 
     log_root.info('Nanio starting...')
-
-    app.register_extensions([
-        NODE,
-        DONATE
-    ])
 
     app.run(
         host=app.config['APP_HOST'],

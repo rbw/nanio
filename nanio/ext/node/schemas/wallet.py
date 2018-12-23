@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
-from nanio.ext.validation import _validate_hex
+from nanio.ext.validation import validate_hex
 
 from ._base import Command, BaseMeta
 
 
 class WalletCommand(Command):
-    wallet = fields.String(required=True, validate=_validate_hex)
+    wallet = fields.String(required=True, validate=validate_hex)
 
 
 class WalletMeta(BaseMeta):

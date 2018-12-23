@@ -2,6 +2,7 @@
 
 import libn
 import decimal
+from ipaddress import ip_address
 from marshmallow import ValidationError
 
 # Validation error messages
@@ -17,21 +18,28 @@ INVALID_ADDRESS = 'must be a valid address prefixed with xrb_ or nano_'
 INVALID_TYPE = 'must be state'
 
 
-def _validate_hex(value):
+def validate_ip(ip):
+    try:
+        ip_address(ip)
+    except ValueError:
+        raise ValidationError('Invalid IP address.')
+
+
+def validate_hex(value):
     try:
         bytes.fromhex(value)
     except ValueError:
         raise ValidationError(INVALID_HEX)
 
 
-def _validate_balance(value):
+def validate_balance(value):
     try:
         libn.rai_from_raw(value)
     except decimal.InvalidOperation:
         raise ValidationError(INVALID_BALANCE)
 
 
-def _validate_link(value):
+def validate_link(value):
     try:
         bytes.fromhex(value)
     except ValueError:
@@ -46,7 +54,7 @@ def _validate_link(value):
             raise ValidationError(INVALID_LINK)
 
 
-def _validate_previous(value):
+def validate_previous(value):
     try:
         bytes.fromhex(value)
     except ValueError:
@@ -57,14 +65,14 @@ def _validate_previous(value):
             raise ValidationError(INVALID_PREVIOUS)
 
 
-def _validate_address(value):
+def validate_address(value):
     try:
         libn.validate_account_number(value)
     except Exception:
         raise ValidationError(INVALID_ADDRESS)
 
 
-def _validate_type(value):
+def validate_type(value):
     if value != 'state':
         raise ValidationError(INVALID_TYPE)
 

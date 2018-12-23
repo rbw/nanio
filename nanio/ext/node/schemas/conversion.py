@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
-from nanio.ext.validation import _validate_balance
+from nanio.ext.validation import validate_balance
 
 from ._base import Command, BaseMeta
 
 
 class ConversionCommand(Command):
-    amount = fields.String(required=True, validate=_validate_balance, description='Amount to convert')
+    amount = fields.String(required=True, validate=validate_balance, description='Amount to convert')
 
 
 class ConversionMeta(BaseMeta):

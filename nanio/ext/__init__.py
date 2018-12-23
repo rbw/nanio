@@ -4,19 +4,19 @@ from sanic.views import HTTPMethodView
 from nanio.config import APP_DEBUG
 
 
-class BaseController(HTTPMethodView):
-    view = None
+class NanioController(HTTPMethodView):
     svc = None
-    db = None
-    ext = {}
 
     def dispatch_request(self, req, *args, **kwargs):
         # TODO: Inject remote_addr? Too much OH? -- Benchmark
         # self.svc.log = LoggerAdapter(self.svc.log, {'remote_addr': req.remote_addr or req.ip})
-        return super(BaseController, self).dispatch_request(req, *args, **kwargs)
+        return super(NanioController, self).dispatch_request(req, *args, **kwargs)
+
+    def __repr__(self):
+        return '<{0} at {1}>'.format(self.__class__.__name__, hex(id(self)))
 
 
-class Extension:
+class NanioExtension:
     def __init__(self, name, controllers, service, documents):
         self.name = name
         self.db_name = 'nanio__'.format(name)
@@ -25,15 +25,23 @@ class Extension:
         self.documents = documents
         self.svc = service
 
+    def __repr__(self):
+        return '<NanioExtension [{0}] at {1}>'.format(self.name, hex(id(self)))
 
-class BaseService:
-    docs = None
-    log = None
-    http_client = None
-    ext = {}
+
+class NanioService:
     debug = APP_DEBUG
+
+    def __init__(self, http_client, docs, log, ext):
+        self.http_client = http_client
+        self.docs = docs
+        self.log = log
+        self.ext = ext
 
     async def http_post(self, url, payload):
         async with self.http_client.post(url, data=payload) as resp:
             result = await resp.json()
             return result, resp.status
+
+    def __repr__(self):
+        return '<{0} at {1}>'.format(self.__class__.__name__, hex(id(self)))

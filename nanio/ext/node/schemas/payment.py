@@ -2,13 +2,13 @@
 
 from marshmallow import fields
 from nanio.config import REQUEST_TIMEOUT
-from nanio.ext.validation import _validate_address, _validate_balance, _validate_hex
+from nanio.ext.validation import validate_address, validate_balance, validate_hex
 
 from ._base import Command, BaseMeta
 
 
 class PaymentCommand(Command):
-    wallet = fields.String(required=True, validate=_validate_hex)
+    wallet = fields.String(required=True, validate=validate_hex)
 
 
 class PaymentMeta(BaseMeta):
@@ -63,7 +63,7 @@ class PaymentEnd(PaymentCommand):
             'response': {}
         }
 
-    account = fields.String(required=True, validate=_validate_address)
+    account = fields.String(required=True, validate=validate_address)
 
 
 class PaymentWait(PaymentCommand):
@@ -81,6 +81,6 @@ class PaymentWait(PaymentCommand):
             'response': "success"
         }
 
-    account = fields.String(required=True, validate=_validate_address)
-    amount = fields.String(required=True, validate=_validate_balance)
+    account = fields.String(required=True, validate=validate_address)
+    amount = fields.String(required=True, validate=validate_balance)
     timeout = fields.Integer(required=True, max=REQUEST_TIMEOUT*1000)

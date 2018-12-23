@@ -2,10 +2,10 @@
 
 from sanic import response
 from nanio.config import RPC_ENABLED
-from nanio.ext import BaseController
+from nanio.ext import NanioController
 
 
-class NodeController(BaseController):
+class NodeController(NanioController):
     path_relative = '/'
 
     async def get(self, _):
@@ -15,5 +15,5 @@ class NodeController(BaseController):
         if not RPC_ENABLED:
             return {'result': 'RPC relay disabled'}, 200
 
-        relay_result, status = await self.svc.send(req.json)
+        relay_result, status = await self.svc.send(req.json, is_internal=False)
         return response.json(relay_result, status=status)

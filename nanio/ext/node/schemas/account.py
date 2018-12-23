@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
-from nanio.ext.validation import _validate_address, _validate_balance, _validate_hex
+from nanio.ext.validation import validate_address, validate_balance, validate_hex
 
 from ._base import Command, BaseMeta
 
@@ -14,7 +14,7 @@ class Account(Command):
     class Meta(AccountMeta):
         pass
 
-    account = fields.String(required=True, validate=_validate_address, description='Address ("xrb_1ipx8...")')
+    account = fields.String(required=True, validate=validate_address, description='Address ("xrb_1ipx8...")')
 
 
 class Accounts(Command):
@@ -23,7 +23,7 @@ class Accounts(Command):
 
     accounts = fields.List(
         fields.String(
-            validate=_validate_address,
+            validate=validate_address,
             required=True
         ),
         required=True,
@@ -48,7 +48,7 @@ class AccountsPending(Accounts):
     source = fields.Boolean(required=False, default=False)
     include_active = fields.Boolean(required=False, default=False)
     count = fields.Integer(required=False, default=False)
-    threshold = fields.Integer(required=False, validate=_validate_balance)
+    threshold = fields.Integer(required=False, validate=validate_balance)
 
 
 class AccountsBalances(Accounts):
@@ -208,7 +208,7 @@ class AccountHistory(Account):
 
     count = fields.Integer(required=False, default=-1)
     raw = fields.Boolean(required=False, default=False)
-    head = fields.String(required=False, validate=_validate_hex)
+    head = fields.String(required=False, validate=validate_hex)
 
 
 class AccountsFrontiers(Accounts):

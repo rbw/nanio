@@ -3,7 +3,7 @@ import aiohttp
 import logging
 
 from motor.motor_asyncio import AsyncIOMotorClient
-from umongo import Instance
+from umongo import Instance as DatabaseInstance
 
 from sanic import Sanic, response
 from sanic.exceptions import SanicException
@@ -18,11 +18,23 @@ def server_start(app, loop):
     app.motor = motor = AsyncIOMotorClient(mongodb_address, io_loop=loop)
     app.http_client = http_client = aiohttp.ClientSession(loop=loop)
 
-    for ext in app.extensions.values():
-        ext.svc.http_client = http_client
-        ext.svc.docs = Instance(motor[ext.name])
-        ext.svc.log = logging.getLogger('nanio.api.{0}'.format(ext.name))
+    for ext in dict(app.extensions).values():
+        docs = DatabaseInstance(motor[ext.name])
 
+        # Register documents first, as they are often used in the Service constructor.
+        for document in ext.documents:
+            registered = docs.register(document, as_attribute=True)
+            registered.ensure_indexes()
+
+        # Create instance of the extension Service and inject useful stuff.
+        ext.svc = ext.svc(
+            http_client=http_client,
+            docs=docs,
+            log=logging.getLogger('nanio.api.{0}'.format(ext.name)),
+            ext=app.extensions,
+        )
+
+        # Add routes and inject Service.
         for ctrl in ext.controllers:
             rp = ctrl.path_relative
             ctrl.svc = ext.svc
@@ -36,29 +48,51 @@ def server_start(app, loop):
 
             app.add_route(ctrl.as_view(), path)
 
-        for document in ext.documents:
-            registered = ext.svc.docs.register(document, as_attribute=True)
-            registered.ensure_indexes()
-
 
 def server_stop(app, loop):
     app.motor.close()
     loop.close()
 
 
+class ExtensionsRegistry:
+    _extensions = {}
+
+    def load(self, extensions):
+        self._extensions = {e.name: e for e in extensions}
+
+    def __iter__(self):
+        yield from self._extensions.items()
+
+    def __repr__(self):
+        return '<ExtensionsRegistry {1} at {0}>'.format(hex(id(self)), list(self._extensions.keys()))
+
+    def __getattr__(self, item):
+        if item not in self._extensions:
+            raise Exception('No such extension: {0}'.format(item))
+
+        return self._extensions.get(item)
+
+
 class Nanio(Sanic):
     http_client = None
     motor = None
-    extensions = {}
     base_path = '/api'
+    extensions = ExtensionsRegistry()
 
-    def __init__(self, **kwargs):
+    def __init__(self, extensions=None, **kwargs):
         super(Nanio, self).__init__(
             kwargs.pop('name', 'nanio'),
             log_config=kwargs.pop('log_config', LOGGING_CONFIG_DEFAULTS),
             **kwargs
         )
 
+        # Provides a registry for convenient access and error handling
+        if not isinstance(extensions, list):
+            raise Exception('Nanio expects a list of extensions.')
+
+        self.extensions.load(extensions)
+
+        # Read ENV-YML config
         self.config.from_object(nanio.config)
 
         # Register error handler for catching exceptions and converting to JSON formatted errors
@@ -85,7 +119,3 @@ class Nanio(Sanic):
                 error = msg
 
             return response.json(body={'error': error}, status=exception.status_code)
-
-    def register_extensions(self, extensions):
-        for extension in extensions:
-            self.extensions[extension.name] = extension

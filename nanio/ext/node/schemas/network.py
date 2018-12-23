@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
-from nanio.ext.validation import _validate_hex
+from nanio.ext.validation import validate_hex
 
 from ._base import Command, BaseMeta
 
@@ -67,5 +67,5 @@ class Republish(Command):
             },
         }
 
-    hash = fields.String(required=True, default='', validate=_validate_hex)
+    hash = fields.String(required=True, default='', validate=validate_hex)
 
