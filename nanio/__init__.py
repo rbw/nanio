@@ -15,13 +15,14 @@ from nanio.log import LOGGING_CONFIG_DEFAULTS, log_root
 
 def server_start(app, loop):
     mongodb_address = '{0}:{1}'.format(app.config['MONGODB_HOST'], app.config['MONGODB_PORT'])
+
+    # Reuse the server loop for motor and aiohttp
     app.motor = motor = AsyncIOMotorClient(mongodb_address, io_loop=loop)
     app.http_client = http_client = aiohttp.ClientSession(loop=loop)
 
     for ext in dict(app.extensions).values():
+        # Documents needs to be ready before service instantiation
         docs = DatabaseInstance(motor[ext.name])
-
-        # Register documents first, as they are often used in the Service constructor.
         for document in ext.documents:
             registered = docs.register(document, as_attribute=True)
             registered.ensure_indexes()
@@ -52,6 +53,23 @@ def server_start(app, loop):
 def server_stop(app, loop):
     app.motor.close()
     loop.close()
+
+
+def register_error_handlers(app):
+    @app.exception(SanicException)
+    async def nanio_error(_, exception):
+        msg = exception.__str__()
+
+        if isinstance(exception, NanioException):
+            if exception.log_message:
+                log_root.error(msg)
+
+        try:
+            error = ujson.loads(msg)
+        except ValueError:
+            error = msg
+
+        return response.json(body={'error': error}, status=exception.status_code)
 
 
 class ExtensionsRegistry:
@@ -96,7 +114,7 @@ class Nanio(Sanic):
         self.config.from_object(nanio.config)
 
         # Register error handler for catching exceptions and converting to JSON formatted errors
-        self.register_error_handlers()
+        register_error_handlers(self)
 
         # Startup listener -- extension registration (controllers, documents, services etc).
         self.register_listener(server_start, 'before_server_start')
@@ -104,18 +122,3 @@ class Nanio(Sanic):
         # Shutdown listener
         self.register_listener(server_stop, 'after_server_stop')
 
-    def register_error_handlers(self):
-        @self.exception(SanicException)
-        async def nanio_error(_, exception):
-            msg = exception.__str__()
-
-            if isinstance(exception, NanioException):
-                if exception.log_message:
-                    log_root.error(msg)
-
-            try:
-                error = ujson.loads(msg)
-            except ValueError:
-                error = msg
-
-            return response.json(body={'error': error}, status=exception.status_code)
