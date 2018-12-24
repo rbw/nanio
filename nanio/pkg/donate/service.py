@@ -40,7 +40,7 @@ class DonationService(NanioService):
         return self.donation.dump(pending)
 
     async def process_donation(self, req):
-        # if self pending donation return 429
+        # if self pending donate return 429
         # wallet_ref = await self.wallet_get()
         # account = await self.node_send({'action': 'payment_begin', 'wallet': wallet_ref['wallet_id']})
         # print(account)

@@ -7,7 +7,7 @@ from .service import DonationService
 from .documents import Wallet, Donation
 
 
-DONATION = NanioPackage(
+DONATE = NanioPackage(
     name='donations',
     controllers=[DonationController],
     service=DonationService,

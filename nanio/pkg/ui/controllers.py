@@ -4,9 +4,9 @@ from sanic import response
 from nanio.pkg import NanioController
 
 
-class DonationController(NanioController):
+class UIController(NanioController):
     path_relative = '/'
 
     async def get(self, req):
-        resp = await self.svc.process_donation(req)
+        resp = await self.svc.schemas
         return response.json(resp, 200)

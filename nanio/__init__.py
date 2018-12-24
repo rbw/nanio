@@ -72,7 +72,7 @@ def register_error_handlers(app):
         return response.json(body={'error': error}, status=exception.status_code)
 
 
-class PackagesRegistry:
+class PackageRegistry:
     _packages = {}
 
     def load(self, packages):
@@ -82,7 +82,7 @@ class PackagesRegistry:
         yield from self._packages.items()
 
     def __repr__(self):
-        return '<PackagesRegistry {1} at {0}>'.format(hex(id(self)), list(self._packages.keys()))
+        return '<{0} {1} at {2}>'.format(self.__class__.__name__, list(self._packages.keys()), hex(id(self)))
 
     def __getattr__(self, item):
         if item not in self._packages:
@@ -95,7 +95,7 @@ class Nanio(Sanic):
     http_client = None
     motor = None
     base_path = '/api'
-    packages = PackagesRegistry()
+    packages = PackageRegistry()
 
     def __init__(self, packages=None, **kwargs):
         super(Nanio, self).__init__(

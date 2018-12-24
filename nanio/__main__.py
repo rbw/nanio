@@ -3,11 +3,12 @@
 from nanio import Nanio
 from nanio.log import log_root
 from nanio.pkg.node import NODE
-from nanio.pkg.donation import DONATION
+from nanio.pkg.donate import DONATE
+from nanio.pkg.ui import UI
 
 
 def main():
-    app = Nanio(packages=[NODE, DONATION])
+    app = Nanio(packages=[NODE, UI, DONATE])
 
     log_root.info('Nanio starting...')
 
