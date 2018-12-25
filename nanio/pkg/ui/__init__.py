@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from nanio.pkg import NanioPackage
+from pkg.templates import NanioPackage
 
 from .controllers import UIController
 from .service import UIService
 
-
 UI = NanioPackage(
-    name='ui',
+    path='/ui',
     controllers=[UIController],
     service=UIService,
-    documents=[]
+    documents=[],
+    meta={
+        'name': 'UI',
+        'summary': 'Nanio application summary and schemas',
+        'description': 'Returns public meta about the Nanio core and registered packages'
+    }
 )

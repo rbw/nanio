@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from nanio.pkg import NanioService
+from pkg.templates import NanioService
 
 
 class DonationService(NanioService):
@@ -10,7 +10,7 @@ class DonationService(NanioService):
         self.wallet = self.docs.Wallet
 
     async def node_send(self, command):
-        data, _ = await self.pkg.node.svc.send(command)
+        data, _ = await self.pkgs.node.svc.send(command)
         return data
 
     async def wallet_get(self):

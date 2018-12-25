@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from sanic import response
-from nanio.pkg import NanioController
+from pkg.templates import NanioController
 
 
 class UIController(NanioController):
-    path_relative = '/'
+    path = '/'
+    schema = 'schema'
 
-    async def get(self, req):
-        resp = await self.svc.schemas
+    async def get(self, _):
+        resp = await self.svc.get_schemas()
         return response.json(resp, 200)

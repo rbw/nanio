@@ -18,6 +18,11 @@ INVALID_ADDRESS = 'must be a valid address prefixed with xrb_ or nano_'
 INVALID_TYPE = 'must be state'
 
 
+def validate_alphanum(value):
+    if not value.isalnum():
+        raise ValidationError('Must be alphanumeric')
+
+
 def validate_ip(ip):
     try:
         ip_address(ip)

@@ -2,11 +2,12 @@
 
 from sanic import response
 from nanio.config import RPC_ENABLED
-from nanio.pkg import NanioController
+from pkg.templates import NanioController
 
 
 class NodeController(NanioController):
-    path_relative = '/'
+    path = '/'
+    schema = 'schema'
 
     async def get(self, _):
         return response.json(self.svc.schemas.by_category, 200)
