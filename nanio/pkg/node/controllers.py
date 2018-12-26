@@ -2,17 +2,21 @@
 
 from sanic import response
 from nanio.config import RPC_ENABLED
-from pkg.templates import NanioController
+from nanio.pkg import Route, Methods
+from nanio.pkg.templates import NanioController
 
 
 class NodeController(NanioController):
-    path = '/'
-    schema = 'schema'
+    def __init__(self):
+        super(NodeController, self).__init__(
+            Route(path='/', method=Methods.GET, handler=self.schemas),
+            Route(path='/', method=Methods.POST, handler=self.relay)
+        )
 
-    async def get(self, _):
+    async def schemas(self, _):
         return response.json(self.svc.schemas.by_category, 200)
 
-    async def post(self, req):
+    async def relay(self, req):
         if not RPC_ENABLED:
             return {'result': 'RPC relay disabled'}, 200
 

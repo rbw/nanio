@@ -15,13 +15,13 @@ class PackageMeta(Schema):
 
 
 class NanioPackage:
-    def __init__(self, path, controllers, service, documents, meta):
+    def __init__(self, path, controller, service, documents, meta):
         self.meta = PackageMeta(strict=True).load(meta).data
         self.name = self.meta['name'].lower()
         self.path = path
+        self.controller = controller()
         self.svc = service
         self.collection = 'nanio__'.format(self.name)
-        self.controllers = controllers
         self.documents = documents
 
     def __repr__(self):

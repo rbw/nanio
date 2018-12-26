@@ -5,9 +5,9 @@ from pkg.templates import NanioPackage
 from .controllers import UIController
 from .service import UIService
 
-UI = NanioPackage(
+PKG_UI = NanioPackage(
     path='/ui',
-    controllers=[UIController],
+    controller=UIController,
     service=UIService,
     documents=[],
     meta={

@@ -5,9 +5,9 @@ from nanio.pkg.templates import NanioPackage
 from .controllers import NodeController
 from .service import NodeService
 
-NODE = NanioPackage(
+PKG_NODE = NanioPackage(
     path='/node',
-    controllers=[NodeController],
+    controller=NodeController,
     service=NodeService,
     documents=[],
     meta={

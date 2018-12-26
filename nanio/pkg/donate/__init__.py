@@ -7,9 +7,9 @@ from .service import DonationService
 from .documents import Wallet, Donation
 
 
-DONATE = NanioPackage(
+PKG_DONATE = NanioPackage(
     path='/donations',
-    controllers=[DonationController],
+    controller=DonationController,
     service=DonationService,
     documents=[Wallet, Donation],
     meta={

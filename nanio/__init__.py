@@ -16,11 +16,13 @@ import nanio.config
 from nanio.log import LOGGING_CONFIG_DEFAULTS, log_root
 
 
-def format_path(value):
-    if value.startswith('/'):
-        value = value[1:]
+def format_path(*parts):
+    path = ''
 
-    return re.sub(r'/+', '/', value.rstrip('/'))
+    for part in parts:
+        path = '/{0}/{1}'.format(path, part)
+
+    return re.sub(r'/+', '/', path.rstrip('/'))
 
 
 async def server_start(app, loop):
@@ -43,36 +45,25 @@ async def server_start(app, loop):
             app=app,
         )
 
-        # Add routes and inject Service.
-        for ctrl in pkg.controllers:
-            #if not ctrl.schema:
-            #    raise Exception('Controller {0}.schema must be set'.format(ctrl.__name__))
+        pkg.controller.svc = pkg.svc
 
-            ctrl.svc = pkg.svc
-
-            for method, resource_path, handler in ctrl.resources:
-                # URL path formatter
-                full_path = '{0}/{1}'.format(
-                    app.base_path,
-                    format_path(pkg.path),
-                    format_path(resource_path),
-                ).rstrip('/')
-
-                app.add_route(handler, full_path, [method])
-
-    for handler, (rule, router) in app.router.routes_names.items():
-        print(rule)
+        for route in pkg.controller.routes:
+            app.route(uri=format_path(app.base_path, pkg.path, route.uri),
+                      methods=route.methods,
+                      host=route.host,
+                      strict_slashes=route.strict_slashes,
+                      stream=route.stream,
+                      version=route.version,
+                      name=route.name,
+                      )(route.handler)
 
     # Reuse the server loop for motor and aiohttp
     app.http_client = aiohttp.ClientSession(loop=loop)
 
 
-# @TODO: create issue "sys:1: RuntimeWarning: coroutine 'Loop.create_server' was never awaited" (only if auto-reload?)
 # Raise an exception during bootstrapping to reproduce.
-async def server_stop(app, loop):
-    await app.motor.close()
+async def before_server_stop(app, loop):
     await app.http_client.close()
-    await loop.close()
 
 
 class PackageRegistry:
@@ -140,5 +131,4 @@ class Nanio(Sanic):
         self.register_listener(server_start, 'before_server_start')
 
         # Shutdown listener
-        self.register_listener(server_stop, 'after_server_stop')
-
+        self.register_listener(before_server_stop, 'before_server_stop')
