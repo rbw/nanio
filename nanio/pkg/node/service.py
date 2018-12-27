@@ -8,7 +8,7 @@ from aiohttp.http_exceptions import HttpProcessingError
 from marshmallow import ValidationError
 
 from nanio.exceptions import NanioException
-from nanio.config import RPC_NODES, RPC_COMMANDS_PUBLIC, RPC_COMMANDS_PROTECTED, RPC_COMMANDS_PRIVATE
+from nanio.settings import RPC_NODES, RPC_COMMANDS_PUBLIC, RPC_COMMANDS_PROTECTED, RPC_COMMANDS_PRIVATE
 from pkg.templates import NanioService
 
 from .schemas import COMMANDS_SCHEMAS

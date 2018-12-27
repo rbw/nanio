@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from pkg.templates.schemas import NanioSchema
+from jetfactory.base import JetfactorySchema
 
 
-class DonationQuerySchema(NanioSchema):
+class DonationQuerySchema(JetfactorySchema):
     pass

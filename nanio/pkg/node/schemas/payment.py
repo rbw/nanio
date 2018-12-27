@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
-from nanio.config import REQUEST_TIMEOUT
+from nanio.settings import REQUEST_TIMEOUT
 from validation import validate_address, validate_balance, validate_hex
 
 from ._base import Command, BaseMeta

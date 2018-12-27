@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from sanic import response
-from nanio.pkg import Route, Methods
-from nanio.pkg.templates import NanioController
+from jetfactory.utils import jsonify
+from jetfactory.base import Route, Methods, JetfactoryController
 
 
-class DonationController(NanioController):
+class DonationController(JetfactoryController):
     def __init__(self):
         super(DonationController, self).__init__(
             Route(path='/', method=Methods.GET, handler=self.one)
@@ -14,5 +13,5 @@ class DonationController(NanioController):
     async def one(self, req):
         print(req)
         # resp = await self.svc.process_donation(req)
-        return response.json({}, 200)
+        return jsonify({}, 200)
 

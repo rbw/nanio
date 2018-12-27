@@ -12,7 +12,7 @@ from sanic import Sanic, response
 from sanic.exceptions import SanicException
 from nanio.exceptions import NanioException
 
-import nanio.config
+import nanio.settings
 from nanio.log import LOGGING_CONFIG_DEFAULTS, log_root
 
 
@@ -122,7 +122,7 @@ class Nanio(Sanic):
         self.packages.load(packages)
 
         # Reads config of ENV or YML into app
-        self.config.from_object(nanio.config)
+        self.config.from_object(nanio.settings)
 
         # Register error handler for catching exceptions and converting to JSON formatted errors
         self.register_error_handlers()

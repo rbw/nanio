@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from toastedmarshmallow import Jit
+import warnings
 from marshmallow import Schema, fields
+from marshmallow.warnings import ChangedInMarshmallow3Warning
+
+warnings.simplefilter('ignore', ChangedInMarshmallow3Warning)
 
 
 class Settings(Schema):
     class Meta:
-        jit = Jit
+        strict = True
 
 
 class Commands(Settings):
@@ -19,7 +22,7 @@ class SettingsCore(Settings):
     listen_host = fields.String(missing='127.0.0.1')
     listen_port = fields.Integer(missing=5000)
     mongodb_host = fields.String(missing='127.0.0.1')
-    mongodb_port = fields.String(missing=27017)
+    mongodb_port = fields.Integer(missing=27017)
     debug = fields.Bool(missing=False)
     workers = fields.Integer(missing=0)
 

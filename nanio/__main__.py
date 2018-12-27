@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+# from jetfactory.
 from nanio import Nanio
 from nanio.log import log_root
 from nanio.pkg.donate import PKG_DONATE
 from nanio.pkg.node import PKG_NODE
-from nanio.pkg.ui import PKG_UI
 
 
 def main():

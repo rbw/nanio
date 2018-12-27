@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from pkg.templates import NanioPackage
+from jetfactory.base import JetfactoryPackage
 
 from .controllers import DonationController
 from .service import DonationService
 from .documents import Wallet, Donation
 
 
-PKG_DONATE = NanioPackage(
+PKG_DONATE = JetfactoryPackage(
     path='/donations',
     controller=DonationController,
     service=DonationService,

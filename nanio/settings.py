@@ -38,8 +38,8 @@ def to_list(value):
 
 
 # Parse settings from YAML files, then load it with Marshmallow for validation and defaults.
-yml_core = SettingsCore(strict=True).load(settings_from_yaml('core.yml')).data
-yml_rpc = SettingsRPC(strict=True).load(settings_from_yaml('rpc.yml')).data
+yml_core = SettingsCore().load(settings_from_yaml('core.yml')).data
+yml_rpc = SettingsRPC().load(settings_from_yaml('rpc.yml')).data
 
 # Create configuration as expected by Sanic, prefer environment over file.
 APP_HOST = env.get('APP_HOST') or yml_core['listen_host']

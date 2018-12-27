@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from pkg.templates import NanioService
+from jetfactory.base import JetfactoryService
 
 
-class DonationService(NanioService):
+class DonationService(JetfactoryService):
     def __init__(self, *args, **kwargs):
         super(DonationService, self).__init__(*args, **kwargs)
         self.donation = self.docs.Donation
