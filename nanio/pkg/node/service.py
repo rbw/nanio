@@ -6,10 +6,11 @@ import ujson
 from aiohttp.client_exceptions import ClientConnectionError
 from aiohttp.http_exceptions import HttpProcessingError
 from marshmallow import ValidationError
+from jetfactory.base import JetfactoryService
 
 from nanio.exceptions import NanioException
 from nanio.settings import RPC_NODES, RPC_COMMANDS_PUBLIC, RPC_COMMANDS_PROTECTED, RPC_COMMANDS_PRIVATE
-from pkg.templates import NanioService
+
 
 from .schemas import COMMANDS_SCHEMAS
 
@@ -59,7 +60,7 @@ class Schemas:
         return groups
 
 
-class NodeService(NanioService):
+class NodeService(JetfactoryService):
     def __init__(self, *args, **kwargs):
         super(NodeService, self).__init__(*args, **kwargs)
         self.node_url = 'http://' + RPC_NODES[0]

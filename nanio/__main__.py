@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 
-# from jetfactory.
-from nanio import Nanio
-from nanio.log import log_root
+from jetfactory import Jetfactory
+from jetfactory.pkg import PKG_UI
+
 from nanio.pkg.donate import PKG_DONATE
 from nanio.pkg.node import PKG_NODE
 
 
 def main():
-    app = Nanio(packages=[PKG_DONATE, PKG_NODE, PKG_UI])
+    app = Jetfactory(
+        settings_file='settings/core.yml',
+        packages=[PKG_UI, PKG_DONATE, PKG_NODE]
+    )
 
-    log_root.info('Nanio starting...')
+    app.log.info('Nanio starting...')
 
     app.run(
         host=app.config['APP_HOST'],

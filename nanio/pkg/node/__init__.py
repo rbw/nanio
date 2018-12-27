@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from nanio.pkg.templates import NanioPackage
+from jetfactory.base import JetfactoryPackage
 
 from .controllers import NodeController
 from .service import NodeService
 
-PKG_NODE = NanioPackage(
+PKG_NODE = JetfactoryPackage(
     path='/node',
     controller=NodeController,
     service=NodeService,

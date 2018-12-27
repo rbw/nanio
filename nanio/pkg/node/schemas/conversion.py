@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
-from validation import validate_balance
+from nanio.validation import validate_balance
 
 from ._base import Command, BaseMeta
 
