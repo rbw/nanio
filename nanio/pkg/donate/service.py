@@ -6,11 +6,11 @@ from jetfactory.base import JetfactoryService
 class DonationService(JetfactoryService):
     def __init__(self, *args, **kwargs):
         super(DonationService, self).__init__(*args, **kwargs)
-        self.donation = self.docs.Donation
-        self.wallet = self.docs.Wallet
+        self.donation = self.db.Donation
+        self.wallet = self.db.Wallet
 
     async def node_send(self, command):
-        data, _ = await self.pkgs.node.svc.send(command)
+        data, _ = await self.app.pkgs.node.svc.send(command)
         return data
 
     async def wallet_get(self):

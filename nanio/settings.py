@@ -18,25 +18,6 @@ def settings_from_yaml(*args):
     return yaml_parse(_dir, *args)
 
 
-def to_bool(value):
-    return str(value).strip().lower() in ['1', 'true', 'yes']
-
-
-def to_int(value):
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return None
-
-
-def to_list(value):
-    """Allow comma and whitespace separation"""
-    if not isinstance(value, str):
-        return False
-
-    return list(filter(None, re.split(r'[,| ]', value)))
-
-
 # Parse settings from YAML files, then load it with Marshmallow for validation and defaults.
 yml_core = SettingsCore().load(settings_from_yaml('core.yml')).data
 yml_rpc = SettingsRPC().load(settings_from_yaml('rpc.yml')).data

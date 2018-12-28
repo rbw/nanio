@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from jetfactory.utils import jsonify
-from jetfactory.base import JetfactoryController
+from jetfactory.base import JetfactoryController, Route, Methods
+
 from nanio.settings import RPC_ENABLED
-from nanio.pkg import Route, Methods
 
 
 class NodeController(JetfactoryController):

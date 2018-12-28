@@ -4,8 +4,7 @@ from datetime import datetime
 from umongo import Document
 from umongo.fields import StringField, DateTimeField, BooleanField
 from umongo.validate import Length
-from jetfactory.validation import validate_ip
-from nanio.validation import validate_hex, validate_address
+from nanio.validation import validate_ip, validate_hex, validate_address
 
 
 class Wallet(Document):

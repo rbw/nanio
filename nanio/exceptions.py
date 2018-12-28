@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from sanic.exceptions import SanicException
+from jetfactory.exceptions import JetfactoryException
 
 
-class NanioException(SanicException):
+class NanioException(JetfactoryException):
     def __init__(self, *args, **kwargs):
         self.log_message = kwargs.pop('write_log', False)
 
