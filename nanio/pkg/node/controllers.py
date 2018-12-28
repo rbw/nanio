@@ -3,8 +3,6 @@
 from jetfactory.utils import jsonify
 from jetfactory.base import JetfactoryController, Route, Methods
 
-from nanio.settings import RPC_ENABLED
-
 
 class NodeController(JetfactoryController):
     def __init__(self):
@@ -17,7 +15,7 @@ class NodeController(JetfactoryController):
         return jsonify(self.svc.schemas.by_category, 200)
 
     async def relay(self, req):
-        if not RPC_ENABLED:
+        if not self.cfg.rpc_enabled:
             return {'result': 'RPC relay disabled'}, 200
 
         relay_result, status = await self.svc.send(req.json, is_internal=False)

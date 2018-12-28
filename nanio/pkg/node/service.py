@@ -7,16 +7,14 @@ from aiohttp.client_exceptions import ClientConnectionError
 from aiohttp.http_exceptions import HttpProcessingError
 from marshmallow import ValidationError
 from jetfactory.base import JetfactoryService
-
-from nanio.exceptions import NanioException
-from nanio.settings import RPC_NODES, RPC_COMMANDS_PUBLIC, RPC_COMMANDS_PROTECTED, RPC_COMMANDS_PRIVATE
-
+from jetfactory.exceptions import JetfactoryException
 
 from .schemas import COMMANDS_SCHEMAS
 
 
 class Schemas:
-    def __init__(self):
+    def __init__(self, cfg):
+        self.commands = cfg.commands
         self.by_action = {s.Meta.action: s for s in COMMANDS_SCHEMAS}
         self.by_category = self.__get_by_category()
 
@@ -27,9 +25,9 @@ class Schemas:
             group = schema.Meta.group
             action = schema.Meta.action
 
-            if action in RPC_COMMANDS_PROTECTED:
+            if action in self.commands.protected:
                 access = 'protected'
-            elif action in RPC_COMMANDS_PRIVATE:
+            elif action in self.commands.private:
                 access = 'private'
             else:
                 access = 'public'
@@ -38,7 +36,7 @@ class Schemas:
                 'name': schema.Meta.name,
                 'action': action,
                 'description': schema.Meta.description,
-                'enabled': action in RPC_COMMANDS_PUBLIC + RPC_COMMANDS_PROTECTED + RPC_COMMANDS_PRIVATE,
+                'enabled': action in self.commands.public + self.commands.protected + self.commands.private,
                 'access': access,
                 'examples': schema.Meta.examples,
                 'fields': []
@@ -63,27 +61,27 @@ class Schemas:
 class NodeService(JetfactoryService):
     def __init__(self, *args, **kwargs):
         super(NodeService, self).__init__(*args, **kwargs)
-        self.node_url = 'http://' + RPC_NODES[0]
-        self.schemas = Schemas()
+        self.node_url = 'http://' + self.cfg.rpc_nodes[0]
+        self.schemas = Schemas(self.cfg)
 
     async def node_rpc_request(self, payload):
         return await self.http_post(self.node_url, payload)
 
     async def validate_command(self, body, is_internal):
         if not body or 'action' not in body:
-            raise NanioException('Missing action in payload', 400)
+            raise JetfactoryException('Missing action in payload', 400)
 
         action = body['action']
         schema = self.schemas.by_action.get(action, None)
 
         if not schema:
-            raise NanioException('Unknown command', 404)
+            raise JetfactoryException('Unknown command', 404)
         elif is_internal:
             pass
-        elif action in RPC_COMMANDS_PRIVATE:
-            raise NanioException('Forbidden', 403)
-        elif action in RPC_COMMANDS_PROTECTED and True:  # TODO: check auth
-            raise NanioException('Unauthorized', 401)
+        elif action in self.cfg.commands.private:
+            raise JetfactoryException('Forbidden', 403)
+        elif action in self.cfg.commands.protected and True:  # TODO: check auth
+            raise JetfactoryException('Unauthorized', 401)
 
         try:
             validated = schema.load(body).data
@@ -95,7 +93,7 @@ class NodeService(JetfactoryService):
             else:
                 self.log.warning('Payload validation failed (action: {0})'.format(action))
 
-            raise NanioException(get_errors(), 422)
+            raise JetfactoryException(get_errors(), 422)
 
         return schema.dumps(validated).data
 
@@ -114,13 +112,13 @@ class NodeService(JetfactoryService):
                 self.log.debug('Relay response [{0}]:\n{1}'.format(body['action'], result))
 
             if 'error' in result:
-                raise NanioException(result['error'], status)
+                raise JetfactoryException(result['error'], status)
 
         except ClientConnectionError as err:
             self.log.critical('Error connecting to backend: {0}'.format(err))
-            raise NanioException('Backend connection error', 500)
+            raise JetfactoryException('Backend connection error', 500)
         except HttpProcessingError as err:
             self.log.warning('{0} (action: {1}) '.format(err.message, body['action']))
-            raise NanioException(err.message, err.code)
+            raise JetfactoryException(err.message, err.code)
 
         return result, status

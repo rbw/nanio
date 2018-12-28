@@ -4,12 +4,14 @@ from jetfactory.base import JetfactoryPackage
 
 from .controllers import NodeController
 from .service import NodeService
+from .settings import settings
 
-PKG_NODE = JetfactoryPackage(
+pkg_node = JetfactoryPackage(
     path='/node',
     controller=NodeController,
     service=NodeService,
     documents=[],
+    settings=settings,
     meta={
         'name': 'Node',
         'summary': 'Node RPC gateway',

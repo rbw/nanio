@@ -7,7 +7,7 @@ from .service import DonationService
 from .documents import Wallet, Donation
 
 
-PKG_DONATE = JetfactoryPackage(
+pkg_donate = JetfactoryPackage(
     path='/donations',
     controller=DonationController,
     service=DonationService,

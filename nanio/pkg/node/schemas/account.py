@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from marshmallow import fields
-from nanio.validation import validate_address, validate_balance, validate_hex
 
+from nanio.validation import validate_address, validate_balance, validate_hex
 from ._base import Command, BaseMeta
 
 

@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from jetfactory import Jetfactory
+from jetfactory import Jetfactory, JetfactorySettings
 
-from nanio.pkg.donate import PKG_DONATE
-from nanio.pkg.node import PKG_NODE
-from nanio.pkg.ui import PKG_UI
+from nanio.pkg import pkg_ui, pkg_donate, pkg_node
 
 
 def main():
     app = Jetfactory(
-        packages=[PKG_UI, PKG_DONATE, PKG_NODE],
-        settings={
-            'TESTAR': ['asd', 'dsa']
-        }
+        packages=[pkg_ui, pkg_node, pkg_donate],
+        settings=JetfactorySettings.yaml_to_jet('core.yml')
     )
 
     app.log.info('Nanio starting...')

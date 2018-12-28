@@ -5,7 +5,7 @@ from jetfactory.base import JetfactoryPackage
 from .controllers import UIController
 from .service import UIService
 
-PKG_UI = JetfactoryPackage(
+pkg_ui = JetfactoryPackage(
     path='/ui',
     controller=UIController,
     service=UIService,

@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from umongo import Document
 from umongo.fields import StringField, DateTimeField, BooleanField
 from umongo.validate import Length
+from jetfactory.base import JetfactoryDocument
+
 from nanio.validation import validate_ip, validate_hex, validate_address
 
 
-class Wallet(Document):
+class Wallet(JetfactoryDocument):
     wallet_id = StringField(required=True, allow_none=False, validate=validate_hex)
     created_on = DateTimeField(default=datetime.now)
 
 
-class Donation(Document):
+class Donation(JetfactoryDocument):
     message = StringField(required=True, validate=Length(min=1, max=10))
     address_from = StringField(required=True, allow_none=False, validate=validate_address)
     address_to = StringField(required=True, allow_none=False, validate=validate_address)

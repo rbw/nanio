@@ -16,9 +16,9 @@ from .account import (
 
 from .network import AvailableSupply, Representatives, RepresentativesOnline, Republish
 from .node import Version
-from .payment import PaymentBegin, PaymentEnd, PaymentInit, PaymentWait
 from .conversion import RaiFromRaw, RaiToRaw, KraiFromRaw, KraiToRaw, MraiFromRaw, MraiToRaw
 from .wallet import WalletCreate, WalletFrontiers, WalletInfo
+# from .payment import PaymentBegin, PaymentEnd, PaymentInit, PaymentWait
 
 COMMANDS_SCHEMAS = [
     # Network
@@ -28,7 +28,7 @@ COMMANDS_SCHEMAS = [
     Version(),
 
     # Payment
-    PaymentBegin(), PaymentEnd(), PaymentInit(), PaymentWait(),
+    # PaymentBegin(), PaymentEnd(), PaymentInit(), PaymentWait(),
 
     # Account
     AccountKey(), AccountBalance(), AccountBlockCount(), AccountWeight(),

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from .ui import PKG_UI
-from .node import PKG_NODE
-from .donate import PKG_DONATE
+from .ui import pkg_ui
+from .node import pkg_node
+from .donate import pkg_donate

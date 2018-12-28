@@ -16,18 +16,20 @@ INVALID_LINK = [
 INVALID_PREVIOUS = 'must be 0 if open block, or previous head block on account (hex)'
 INVALID_ADDRESS = 'must be a valid address prefixed with xrb_ or nano_'
 INVALID_TYPE = 'must be state'
+INVALID_ALPHANUM = 'Must be alphanumeric'
+INVALID_IPADDR = 'Invalid IP address'
 
 
 def validate_alphanum(value):
     if not value.isalnum():
-        raise ValidationError('Must be alphanumeric')
+        raise ValidationError(INVALID_ALPHANUM)
 
 
 def validate_ip(ip):
     try:
         ip_address(ip)
     except ValueError:
-        raise ValidationError('Invalid IP address.')
+        raise ValidationError(INVALID_IPADDR)
 
 
 def validate_hex(value):
