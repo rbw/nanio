@@ -2,7 +2,6 @@
 
 from marshmallow import fields, Schema
 from jetfactory.utils import yaml_parse
-from jetfactory.base import PackageSettings
 
 
 class Commands(Schema):
@@ -11,10 +10,11 @@ class Commands(Schema):
     private = fields.List(fields.String(), missing=[])
 
 
-class Settings(PackageSettings):
+class Settings(Schema):
     enabled = fields.Bool(missing=False)
     nodes = fields.List(fields.String(), missing=[])
     commands = fields.Nested(Commands, required=True)
 
 
-settings = (Settings, yaml_parse('node.yml'))
+_contents = dict(yaml_parse('node.yml'))
+settings = Settings(strict=True).load(_contents).data

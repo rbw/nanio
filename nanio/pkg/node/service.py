@@ -13,8 +13,8 @@ from .schemas import COMMANDS_SCHEMAS
 
 
 class Schemas:
-    def __init__(self, cfg):
-        self.commands = cfg.commands
+    def __init__(self, commands):
+        self.commands = commands
         self.by_action = {s.Meta.action: s for s in COMMANDS_SCHEMAS}
         self.by_category = self.__get_by_category()
 
@@ -25,9 +25,9 @@ class Schemas:
             group = schema.Meta.group
             action = schema.Meta.action
 
-            if action in self.commands.protected:
+            if action in self.commands['protected']:
                 access = 'protected'
-            elif action in self.commands.private:
+            elif action in self.commands['private']:
                 access = 'private'
             else:
                 access = 'public'
@@ -36,7 +36,7 @@ class Schemas:
                 'name': schema.Meta.name,
                 'action': action,
                 'description': schema.Meta.description,
-                'enabled': action in self.commands.public + self.commands.protected + self.commands.private,
+                'enabled': action in self.commands['public'] + self.commands['protected'] + self.commands['private'],
                 'access': access,
                 'examples': schema.Meta.examples,
                 'fields': []
@@ -59,10 +59,11 @@ class Schemas:
 
 
 class NodeService(JetfactoryService):
-    def __init__(self, *args, **kwargs):
-        super(NodeService, self).__init__(*args, **kwargs)
-        self.node_url = 'http://' + self.cfg.rpc_nodes[0]
-        self.schemas = Schemas(self.cfg)
+    def __init__(self, **kwargs):
+        super(NodeService, self).__init__(**kwargs)
+        self.node_url = 'http://' + self.cfg['nodes'][0]
+        self.commands = self.cfg['commands']
+        self.schemas = Schemas(self.commands)
 
     async def node_rpc_request(self, payload):
         return await self.http_post(self.node_url, payload)
@@ -78,9 +79,9 @@ class NodeService(JetfactoryService):
             raise JetfactoryException('Unknown command', 404)
         elif is_internal:
             pass
-        elif action in self.cfg.commands.private:
+        elif action in self.commands['private']:
             raise JetfactoryException('Forbidden', 403)
-        elif action in self.cfg.commands.protected and True:  # TODO: check auth
+        elif action in self.commands['protected'] and True:  # TODO: check auth
             raise JetfactoryException('Unauthorized', 401)
 
         try:

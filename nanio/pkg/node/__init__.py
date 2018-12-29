@@ -7,10 +7,8 @@ from .service import NodeService
 from .settings import settings
 
 pkg_node = JetfactoryPackage(
-    path='/node',
     controller=NodeController,
     service=NodeService,
-    documents=[],
     settings=settings,
     meta={
         'name': 'Node',

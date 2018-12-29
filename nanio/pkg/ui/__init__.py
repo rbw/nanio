@@ -6,10 +6,8 @@ from .controllers import UIController
 from .service import UIService
 
 pkg_ui = JetfactoryPackage(
-    path='/ui',
     controller=UIController,
     service=UIService,
-    documents=[],
     meta={
         'name': 'UI',
         'summary': 'Jetfactory application summary and schemas',
