@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from jetfactory.base import JetfactoryPackage
+from jetfactory.base import JetPackage
 
-from .controllers import UIController
+from .controller import UIController
 from .service import UIService
 
-pkg_ui = JetfactoryPackage(
+pkg_ui = JetPackage(
     controller=UIController,
     service=UIService,
     meta={

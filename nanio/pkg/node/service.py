@@ -6,7 +6,7 @@ import ujson
 from aiohttp.client_exceptions import ClientConnectionError
 from aiohttp.http_exceptions import HttpProcessingError
 from marshmallow import ValidationError
-from jetfactory.base import JetfactoryService
+from jetfactory.base import JetService
 from jetfactory.exceptions import JetfactoryException
 
 from .schemas import COMMANDS_SCHEMAS
@@ -58,7 +58,7 @@ class Schemas:
         return groups
 
 
-class NodeService(JetfactoryService):
+class NodeService(JetService):
     def __init__(self):
         self.node_url = 'http://' + self.cfg['nodes'][0]
         self.commands = self.cfg['commands']
@@ -88,7 +88,7 @@ class NodeService(JetfactoryService):
         except ValidationError as err:
             get_errors = functools.partial(ujson.dumps, err.messages)
 
-            if self.debug:
+            if self.app.debug:
                 self.log.debug('Validation failed:\n{0}'.format(get_errors(indent=4)))
             else:
                 self.log.warning('Payload validation failed (action: {0})'.format(action))
@@ -100,7 +100,7 @@ class NodeService(JetfactoryService):
     async def send(self, body, is_internal=True):
         command = await self.validate_command(body, is_internal)
 
-        if self.debug:
+        if self.app.debug:
             self.log.debug('Command relay [{0}]:\n{1}'.format(body['action'], command))
         else:
             self.log.info('Command relay [{0}]'.format(body['action']))
@@ -108,7 +108,7 @@ class NodeService(JetfactoryService):
         try:
             result, status = await self.http_post(self.node_url, command)
 
-            if self.debug:
+            if self.app.debug:
                 self.log.debug('Relay response [{0}]:\n{1}'.format(body['action'], result))
 
             if 'error' in result:

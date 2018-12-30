@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from jetfactory.base import JetfactoryService
+from jetfactory.base import JetService
 
 
-class UIService(JetfactoryService):
+class UIService(JetService):
     async def get_schemas(self, node_schemas):
         routes = self.app.router.routes_names
 

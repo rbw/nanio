@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from jetfactory.base import JetfactoryPackage
+from jetfactory.base import JetPackage
 
-from .controllers import DonationController
+from .controller import DonationController
 from .service import DonationService
 from .documents import Wallet, Donation
 
 
-pkg_donate = JetfactoryPackage(
-    path='/donations',
+pkg_donate = JetPackage(
     controller=DonationController,
     service=DonationService,
     documents=[Wallet, Donation],

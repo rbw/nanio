@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from jetfactory.base import JetfactoryService
+from jetfactory.base import JetService
 
 
-class DonationService(JetfactoryService):
+class DonationService(JetService):
     def __init__(self, **kwargs):
         super(DonationService, self).__init__(**kwargs)
         self.donation = self.db.Donation

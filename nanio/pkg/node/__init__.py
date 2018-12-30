@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from jetfactory.base import JetfactoryPackage
+from jetfactory.base import JetPackage
 
-from .controllers import NodeController
+from .controller import NodeController
 from .service import NodeService
 from .settings import settings
 
-pkg_node = JetfactoryPackage(
+pkg_node = JetPackage(
     controller=NodeController,
     service=NodeService,
     settings=settings,
