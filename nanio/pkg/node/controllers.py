@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from jetfactory.utils import jsonify
-from jetfactory.base import JetfactoryController, Route, Methods
+from jetfactory.base import JetfactoryController, Route
 
 
 class NodeController(JetfactoryController):
-    def _set_routes(self):
+    def setup(self):
+        # The (RPC) relay route handles validation / (de)serialization in the service layer
         return [
-            Route(path='/', method=Methods.GET, handler=self.schemas),
-            Route(path='/', method=Methods.POST, handler=self.relay)
+            Route(handler=self.schemas, path='/', method='GET', schema=None),
+            Route(handler=self.relay, path='/', method='POST', schema=None)
         ]
 
     async def schemas(self, _):

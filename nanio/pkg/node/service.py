@@ -59,8 +59,7 @@ class Schemas:
 
 
 class NodeService(JetfactoryService):
-    def __init__(self, **kwargs):
-        super(NodeService, self).__init__(**kwargs)
+    def __init__(self):
         self.node_url = 'http://' + self.cfg['nodes'][0]
         self.commands = self.cfg['commands']
         self.schemas = Schemas(self.commands)

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from jetfactory.utils import jsonify
-from jetfactory.base import Route, Methods, JetfactoryController
+from jetfactory.base import JetfactoryController, Route
 
 
 class DonationController(JetfactoryController):
-    def _set_routes(self):
-        return [
-            Route(path='/', method=Methods.GET, handler=self.one)
+    def __init__(self):
+        self.routes = [
+            Route(handler=self.one, path='/', method='GET', schema=None)
         ]
 
     async def one(self, req):
