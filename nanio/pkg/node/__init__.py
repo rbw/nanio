@@ -11,7 +11,7 @@ pkg_node = JetPackage(
     service=NodeService,
     settings=settings,
     meta={
-        'name': 'Node',
+        'name': 'nanio-node',
         'summary': 'Node RPC gateway',
         'description': 'Performs various sanity checks before relaying to the Node RPC server'
     }

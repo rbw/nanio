@@ -8,6 +8,7 @@ class NodeController(JetController):
     def _setup(self):
         # The (RPC) relay route handles validation / (de)serialization in the service layer
         return JetControllerSettings(
+            path='/node',
             routes=[
                 JetRoute(handler=self.schemas, path='/', method='GET', schema=None),
                 JetRoute(handler=self.relay, path='/', method='POST', schema=None)

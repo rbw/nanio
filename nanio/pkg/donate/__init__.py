@@ -4,7 +4,7 @@ from jetfactory.base import JetPackage
 
 from .controller import DonationController
 from .service import DonationService
-from .documents import Wallet, Donation
+from .model import Wallet, Donation
 
 
 pkg_donate = JetPackage(
@@ -12,7 +12,7 @@ pkg_donate = JetPackage(
     service=DonationService,
     documents=[Wallet, Donation],
     meta={
-        'name': 'Donate',
+        'name': 'nanio-donate',
         'summary': 'Package for sending and listing donations',
         'description': 'Keeps track of donations, uses Github OAuth2'
     }

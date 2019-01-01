@@ -10,7 +10,7 @@ class UIController(JetController):
 
     def _setup(self):
         return JetControllerSettings(
-            path='/',
+            path='/ui',
             routes=[
                 JetRoute(handler=self.get, path='/', method='GET', schema=None)
             ]
