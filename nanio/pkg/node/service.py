@@ -93,7 +93,7 @@ class NodeService(JetService):
             else:
                 self.log.warning('Payload validation failed (action: {0})'.format(action))
 
-            raise JetfactoryException(get_errors(), 422)
+            raise JetfactoryException(xget_errors(), 422)
 
         return schema.dumps(validated).data
 
@@ -112,7 +112,7 @@ class NodeService(JetService):
                 self.log.debug('Relay response [{0}]:\n{1}'.format(body['action'], result))
 
             if 'error' in result:
-                raise JetfactoryException(result['error'], status)
+                raise JetfactoryExceptionx(result['error'], status)
 
         except ClientConnectionError as err:
             self.log.critical('Error connecting to backend: {0}'.format(err))
